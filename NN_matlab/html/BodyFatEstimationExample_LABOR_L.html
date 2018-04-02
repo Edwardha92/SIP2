@@ -1,0 +1,7725 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Body Fat Estimation LABORVERSUCH HSM</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-12-14"><meta name="DC.source" content="BodyFatEstimationExample_LABOR_L.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Body Fat Estimation LABORVERSUCH HSM</h1><!--introduction--><p>This example illustrates how a function fitting neural network can estimate body fat percentage based on anatomical measurements.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">The Problem: Estimate Body Fat Percentage</a></li><li><a href="#2">Why Neural Networks?</a></li><li><a href="#3">Preparing the Data</a></li><li><a href="#5">Fitting a Function with a Neural Network</a></li><li><a href="#9">Testing the Neural Network</a></li><li><a href="#13">Aufgaben</a></li><li><a href="#14">1 Plotten Sie die Regressionsgeraden getrennt f&uuml;r</a></li><li><a href="#15">2 Trainieren Sie das Netz 10 mal und plotten Sie die zugeh&ouml;rigen</a></li><li><a href="#16">3 A Optinieren Sie die Netz Topologie (Anzahl Neuronen in der</a></li><li><a href="#17">3 B Nutzen Sie PCA zur Datenreduction</a></li></ul></div><h2 id="1">The Problem: Estimate Body Fat Percentage</h2><p>In this example we attempt to build a neural network that can estimate the body fat percentage of a person described by thirteen physical attributes:</p><div><ul><li>Age (years)</li><li>Weight (lbs)</li><li>Height (inches)</li><li>Neck circumference (cm)</li><li>Chest circumference (cm)</li><li>Abdomen 2 circumference (cm)</li><li>Hip circumference (cm)</li><li>Thigh circumference (cm)</li><li>Knee circumference (cm)</li><li>Ankle circumference (cm)</li><li>Biceps (extended) circumference (cm)</li><li>Forearm circumference (cm)</li><li>Wrist circumference (cm)</li></ul></div><p>This is an example of a fitting problem, where inputs are matched up to associated target outputs, and we would like to create a neural network which not only estimates the known targets given known inputs, but can generalize to accurately estimate outputs for inputs that were not used to design the solution.</p><h2 id="2">Why Neural Networks?</h2><p>Neural networks are very good at function fit problems.  A neural network with enough elements (called neurons) can fit any data with arbitrary accuracy. They are particularly well suited for addressing nonlinear problems. Given the nonlinear nature of real world phenomena, like like body fat accretion, neural networks are a good candidate for solving the problem.</p><p>The thirteen physical attributes will act as inputs to a neural network, and the body fat percentage will be the target.</p><p>The network will be designed by using the anatomical quantities of bodies whose body fat percentage is already known to train it to produce the target valuations.</p><h2 id="3">Preparing the Data</h2><p>Data for function fitting problems are set up for a neural network by organizing the data into two matrices, the input matrix X and the target matrix T.</p><p>Each ith column of the input matrix will have thirteen elements representing a body with known body fat percentage.</p><p>Each corresponding column of the target matrix will have one element, representing the body fat percentage.</p><p>Here such a dataset is loaded.</p><pre class="codeinput">[x,t] = bodyfat_dataset;
+</pre><p>We can view the sizes of inputs X and targets T.</p><p>Note that both X and T have 252 columns. These represent 252 physiques (inputs) and associated body fat percentages (targets).</p><p>The input matrix X has thirteen rows, for the thirteen attributes. The target matrix T has only one row, as for each example we only have one desired output, the body fat percentage.</p><pre class="codeinput">size(x)
+size(t)
+</pre><pre class="codeoutput">
+ans =
+
+    13   252
+
+
+ans =
+
+     1   252
+
+</pre><h2 id="5">Fitting a Function with a Neural Network</h2><p>The next step is to create a neural network that will learn to estimate body fat percentages.</p><p>Since the neural network starts with random initial weights, the results of this example will differ slightly every time it is run. The random seed is set to avoid this randomness. However this is not necessary for your own applications.</p><pre class="codeinput"><span class="comment">% setdemorandstream(491218382)</span>
+</pre><p>Two-layer (i.e. one-hidden-layer) feed forward neural networks can fit any input-output relationship given enough neurons in the hidden layer. Layers which are not output layers are called hidden layers.</p><p>We will try a single hidden layer of 15 neurons for this example. In general, more difficult problems require more neurons, and perhaps more layers.  Simpler problems require fewer neurons.</p><p>The input and output have sizes of 0 because the network has not yet been configured to match our input and target data.  This will happen when the network is trained.</p><pre class="codeinput">net = fitnet(15);
+view(net)
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_01.png" style="width:549px;height:153px;" alt=""> <p>Now the network is ready to be trained. The samples are automatically divided into training, validation and test sets. The training set is used to teach the network. Training continues as long as the network continues improving on the validation set. The test set provides a completely independent measure of network accuracy.</p><p>The NN Training Tool shows the network being trained and the algorithms used to train it.  It also displays the training state during training and the criteria which stopped training will be highlighted in green.</p><p>The buttons at the bottom  open useful plots which can be opened during and after training.  Links next to the algorithm names and plot buttons open documentation on those subjects.</p><pre class="codeinput">[net,tr] = train(net,x,t);
+nntraintool
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_02.png" style="width:504px;height:731px;" alt=""> <p>To see how the network's performance improved during training, either click the "Performance" button in the training tool, or call PLOTPERFORM.</p><p>Performance is measured in terms of mean squared error, and shown in log scale.  It rapidly decreased as the network was trained.</p><p>Performance is shown for each of the training, validation and test sets. The version of the network that did best on the validation set is was after training.</p><pre class="codeinput">plotperform(tr)
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_03.png" style="width:560px;height:420px;" alt=""> <h2 id="9">Testing the Neural Network</h2><p>The mean squared error of the trained neural network can now be measured with respect to the testing samples. This will give us a sense of how well the network will do when applied to data from the real world.</p><pre class="codeinput">testX = x(:,tr.testInd);
+testT = t(:,tr.testInd);
+
+testY = net(testX);
+
+perf = mse(net,testT,testY)
+</pre><pre class="codeoutput">
+perf =
+
+   22.9094
+
+</pre><p>Another measure of how well the neural network has fit the data is the regression plot.  Here the regression is plotted across all samples.</p><p>The regression plot shows the actual network outputs plotted in terms of the associated target values.  If the network has learned to fit the data well, the linear fit to this output-target relationship should closely intersect the bottom-left and top-right corners of the plot.</p><p>If this is not the case then further training, or training a network with more hidden neurons, would be advisable.</p><pre class="codeinput">y = net(x);
+figure(3)
+plotregression(t,y)
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_04.png" style="width:500px;height:500px;" alt=""> <p>Another third measure of how well the neural network has fit data is the error histogram.  This shows how the error sizes are distributed. Typically most errors are near zero, with very few errors far from that.</p><pre class="codeinput">e = t - y;
+figure(5)
+ploterrhist(e)
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_05.png" style="width:560px;height:420px;" alt=""> <p>This example illustrated how to design a neural network that estimates the body fat percentage from physical characteristics.</p><p>Explore other examples and the documentation for more insight into neural networks and their applications.</p><h2 id="13">Aufgaben</h2><p>B. WIR 8.12.2017</p><h2 id="14">1 Plotten Sie die Regressionsgeraden getrennt f&uuml;r</h2><p>Trainings-, Test- und Validierungsdaten</p><pre class="codeinput">figure(10)
+plotregression(t(:,tr.trainInd),y(:,tr.trainInd),<span class="string">'TRAIN'</span>,t(:,tr.testInd),y(:,tr.testInd),<span class="string">'TEST'</span>,t(:,tr.valInd),y(:,tr.valInd),<span class="string">'VALID'</span>)
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_06.png" style="width:700px;height:700px;" alt=""> <h2 id="15">2 Trainieren Sie das Netz 10 mal und plotten Sie die zugeh&ouml;rigen</h2><p>Korrelationskoeffizienten und die mse-Werte</p><pre class="codeinput">nntraintool(<span class="string">'close'</span>);
+N=10;
+R_werte = zeros(3,N);
+mse_werte = zeros(3,N); <span class="comment">% Train-,Test, Validierungsfehler</span>
+
+<span class="keyword">for</span> i=1:N;
+    net = fitnet(15); <span class="comment">%neues Netz anlegen</span>
+    net = fitnet(5);
+    [net,tr] = train(net,x,t);
+
+    mse_werte(1,i) = mse(t(:,tr.trainInd),y(:,tr.trainInd));
+    mse_werte(2,i) = mse(t(:,tr.testInd),y(:,tr.testInd));
+    mse_werte(3,i) = mse(t(:,tr.valInd),y(:,tr.valInd));
+
+    [r,m,b] = regression(t(:,tr.trainInd),y(:,tr.trainInd))
+    R_werte(1,i) = r;
+    [r,m,b] = regression(t(:,tr.testInd),y(:,tr.testInd))
+    R_werte(2,i) = r;
+    [r,m,b] = regression(t(:,tr.valInd),y(:,tr.valInd))
+    R_werte(3,i) = r;
+
+
+    figure(11);
+    plotperform(tr);
+<span class="keyword">end</span>
+    figure(12);
+    plot( mse_werte(1,:)); hold <span class="string">on</span>;  plot( mse_werte(2,:));plot( mse_werte(3,:));
+    legend(<span class="string">'Train'</span>, <span class="string">'Test'</span>, <span class="string">'Valid'</span>); title(<span class="string">'MSE'</span>); hold  <span class="string">off</span>;
+
+    figure(13);
+    plot( R_werte(1,:)); hold <span class="string">on</span>;  plot( R_werte(2,:));plot( R_werte(3,:));
+    legend(<span class="string">'Train'</span>, <span class="string">'Test'</span>, <span class="string">'Valid'</span>); title(<span class="string">'R'</span>); hold <span class="string">off</span>;
+
+<span class="comment">% FAZIT: Je nach Initialisierung ist das Netz unterschiedlich gut</span>
+</pre><pre class="codeoutput">
+r =
+
+    0.8723
+
+
+m =
+
+    0.7778
+
+
+b =
+
+    4.7817
+
+
+r =
+
+    0.9233
+
+
+m =
+
+    0.9115
+
+
+b =
+
+    0.3469
+
+
+r =
+
+    0.8612
+
+
+m =
+
+    0.7656
+
+
+b =
+
+    4.9490
+
+
+r =
+
+    0.8723
+
+
+m =
+
+    0.7782
+
+
+b =
+
+    4.5853
+
+
+r =
+
+    0.9270
+
+
+m =
+
+    0.8106
+
+
+b =
+
+    4.1274
+
+
+r =
+
+    0.8149
+
+
+m =
+
+    0.8556
+
+
+b =
+
+    2.4509
+
+
+r =
+
+    0.8653
+
+
+m =
+
+    0.8086
+
+
+b =
+
+    4.0122
+
+
+r =
+
+    0.8866
+
+
+m =
+
+    0.7687
+
+
+b =
+
+    4.1480
+
+
+r =
+
+    0.9136
+
+
+m =
+
+    0.7723
+
+
+b =
+
+    4.9079
+
+
+r =
+
+    0.8805
+
+
+m =
+
+    0.8026
+
+
+b =
+
+    3.8415
+
+
+r =
+
+    0.8893
+
+
+m =
+
+    0.8766
+
+
+b =
+
+    3.0547
+
+
+r =
+
+    0.8636
+
+
+m =
+
+    0.6891
+
+
+b =
+
+    6.8044
+
+
+r =
+
+    0.8645
+
+
+m =
+
+    0.7927
+
+
+b =
+
+    4.0107
+
+
+r =
+
+    0.8631
+
+
+m =
+
+    0.7599
+
+
+b =
+
+    5.6762
+
+
+r =
+
+    0.9276
+
+
+m =
+
+    0.8066
+
+
+b =
+
+    4.2848
+
+
+r =
+
+    0.8804
+
+
+m =
+
+    0.8054
+
+
+b =
+
+    4.0647
+
+
+r =
+
+    0.8765
+
+
+m =
+
+    0.8471
+
+
+b =
+
+    3.2643
+
+
+r =
+
+    0.8575
+
+
+m =
+
+    0.6778
+
+
+b =
+
+    6.2662
+
+
+r =
+
+    0.8807
+
+
+m =
+
+    0.7958
+
+
+b =
+
+    4.3514
+
+
+r =
+
+    0.8107
+
+
+m =
+
+    0.7403
+
+
+b =
+
+    5.0333
+
+
+r =
+
+    0.9117
+
+
+m =
+
+    0.8189
+
+
+b =
+
+    3.2034
+
+
+r =
+
+    0.8792
+
+
+m =
+
+    0.7898
+
+
+b =
+
+    4.4438
+
+
+r =
+
+    0.8435
+
+
+m =
+
+    0.7519
+
+
+b =
+
+    4.3967
+
+
+r =
+
+    0.8998
+
+
+m =
+
+    0.8493
+
+
+b =
+
+    3.1027
+
+
+r =
+
+    0.8920
+
+
+m =
+
+    0.8229
+
+
+b =
+
+    3.8992
+
+
+r =
+
+    0.7697
+
+
+m =
+
+    0.6247
+
+
+b =
+
+    6.3963
+
+
+r =
+
+    0.8769
+
+
+m =
+
+    0.7557
+
+
+b =
+
+    4.5549
+
+
+r =
+
+    0.8713
+
+
+m =
+
+    0.7967
+
+
+b =
+
+    4.0261
+
+
+r =
+
+    0.8867
+
+
+m =
+
+    0.8045
+
+
+b =
+
+    4.9159
+
+
+r =
+
+    0.8926
+
+
+m =
+
+    0.7532
+
+
+b =
+
+    4.6799
+
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_07.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_08.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_09.png" style="width:560px;height:420px;" alt=""> <h2 id="16">3 A Optinieren Sie die Netz Topologie (Anzahl Neuronen in der</h2><pre>verdeckten Schicht anhand vom Korrelationskoeffizienten R
+x = x+ 0.02 *randn(size(x))* mean(mean(x)); %sp&auml;ter Rauschen dazu</pre><pre class="codeinput"><span class="comment">%   3B Sp&auml;ter: PCA Datenreduktion</span>
+<span class="comment">% [COEFF, SCORE, LATENT] = pca(x)</span>
+<span class="comment">% figure(20)</span>
+<span class="comment">% subplot(1,3,1);imagesc(COEFF);</span>
+<span class="comment">% subplot(1,3,2);imagesc(SCORE);</span>
+<span class="comment">% subplot(1,3,3);plot(LATENT);title('PCA-Eigenwerte')</span>
+
+
+<span class="comment">% [x_n_pca,settings_pca] = processpca(x,'maxfrac',0.001); %</span>
+<span class="comment">% x = x_n_pca;</span>
+<span class="comment">% size(x)</span>
+
+    ANZ_N = 15;
+    R_werte_mittel = ones(3,ANZ_N);
+
+    <span class="keyword">for</span> j = ANZ_N:-1:1
+        N = 10 <span class="comment">% Experimente</span>
+        <span class="keyword">for</span> i=1:N;
+            net = fitnet(j); <span class="comment">%neues Netz anlegen</span>
+           [net,tr] = train(net,x,t);
+
+
+            [r,m,b] = regression(t(:,tr.trainInd),y(:,tr.trainInd))
+            R_werte_mittel(1,j) = R_werte_mittel(1,j)+ r;
+            [r,m,b] = regression(t(:,tr.testInd),y(:,tr.testInd))
+            R_werte_mittel(2,j) = R_werte_mittel(2,j)+ r;
+            [r,m,b] = regression(t(:,tr.valInd),y(:,tr.valInd))
+            R_werte_mittel(3,j) = R_werte_mittel(3,j)+ r;
+
+        <span class="keyword">end</span>
+        R_werte_mittel(:,j)= R_werte_mittel(:,j)/N;
+    <span class="keyword">end</span>
+    figure(14);
+    plot( R_werte_mittel(1,:)); hold <span class="string">on</span>;  plot( R_werte_mittel(2,:));plot( R_werte_mittel(3,:));
+    legend(<span class="string">'Train'</span>, <span class="string">'Test'</span>, <span class="string">'Valid'</span>); title(<span class="string">'Optimierung Netzdimension'</span>); hold <span class="string">off</span>;
+    <span class="comment">% FAZIT: 2 Neuronen gen&uuml;gen in der verdeckten Schicht R = ca 0.9 +-0.3</span>
+    <span class="comment">% PC mit 3 HAupkomponenten - &gt; R &gt; o.9+-0.3 bringt wenig ; die</span>
+    <span class="comment">% Verdeckte schicht kann das was PCA macht, mit PCA gen&uuml;gt 1 Neuron in VS</span>
+</pre><pre class="codeoutput">
+N =
+
+    10
+
+
+r =
+
+    0.8922
+
+
+m =
+
+    0.8002
+
+
+b =
+
+    4.2772
+
+
+r =
+
+    0.8488
+
+
+m =
+
+    0.7864
+
+
+b =
+
+    3.7995
+
+
+r =
+
+    0.8250
+
+
+m =
+
+    0.7725
+
+
+b =
+
+    4.4255
+
+
+r =
+
+    0.8838
+
+
+m =
+
+    0.8128
+
+
+b =
+
+    3.5742
+
+
+r =
+
+    0.8698
+
+
+m =
+
+    0.8052
+
+
+b =
+
+    4.7031
+
+
+r =
+
+    0.8611
+
+
+m =
+
+    0.6719
+
+
+b =
+
+    7.4392
+
+
+r =
+
+    0.8821
+
+
+m =
+
+    0.8003
+
+
+b =
+
+    3.7594
+
+
+r =
+
+    0.8726
+
+
+m =
+
+    0.7342
+
+
+b =
+
+    5.8698
+
+
+r =
+
+    0.8704
+
+
+m =
+
+    0.7965
+
+
+b =
+
+    5.3058
+
+
+r =
+
+    0.8808
+
+
+m =
+
+    0.8006
+
+
+b =
+
+    4.1801
+
+
+r =
+
+    0.8674
+
+
+m =
+
+    0.7401
+
+
+b =
+
+    4.6272
+
+
+r =
+
+    0.8739
+
+
+m =
+
+    0.8171
+
+
+b =
+
+    4.0092
+
+
+r =
+
+    0.8929
+
+
+m =
+
+    0.8166
+
+
+b =
+
+    3.8235
+
+
+r =
+
+    0.8164
+
+
+m =
+
+    0.7203
+
+
+b =
+
+    6.2465
+
+
+r =
+
+    0.8589
+
+
+m =
+
+    0.7385
+
+
+b =
+
+    4.3968
+
+
+r =
+
+    0.8834
+
+
+m =
+
+    0.7989
+
+
+b =
+
+    4.1341
+
+
+r =
+
+    0.8655
+
+
+m =
+
+    0.8105
+
+
+b =
+
+    4.0628
+
+
+r =
+
+    0.8291
+
+
+m =
+
+    0.7306
+
+
+b =
+
+    5.0365
+
+
+r =
+
+    0.8783
+
+
+m =
+
+    0.8108
+
+
+b =
+
+    3.8491
+
+
+r =
+
+    0.8813
+
+
+m =
+
+    0.7966
+
+
+b =
+
+    4.3736
+
+
+r =
+
+    0.8709
+
+
+m =
+
+    0.7208
+
+
+b =
+
+    5.6364
+
+
+r =
+
+    0.8580
+
+
+m =
+
+    0.7437
+
+
+b =
+
+    5.1906
+
+
+r =
+
+    0.9165
+
+
+m =
+
+    0.8759
+
+
+b =
+
+    1.9276
+
+
+r =
+
+    0.9113
+
+
+m =
+
+    0.9145
+
+
+b =
+
+    2.2945
+
+
+r =
+
+    0.8768
+
+
+m =
+
+    0.7710
+
+
+b =
+
+    4.6700
+
+
+r =
+
+    0.9147
+
+
+m =
+
+    0.8903
+
+
+b =
+
+    2.4127
+
+
+r =
+
+    0.8312
+
+
+m =
+
+    0.8049
+
+
+b =
+
+    4.0106
+
+
+r =
+
+    0.8742
+
+
+m =
+
+    0.7917
+
+
+b =
+
+    4.0045
+
+
+r =
+
+    0.8796
+
+
+m =
+
+    0.8217
+
+
+b =
+
+    4.4827
+
+
+r =
+
+    0.9050
+
+
+m =
+
+    0.7999
+
+
+b =
+
+    4.5614
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8646
+
+
+m =
+
+    0.7755
+
+
+b =
+
+    4.3946
+
+
+r =
+
+    0.9138
+
+
+m =
+
+    0.8060
+
+
+b =
+
+    4.3074
+
+
+r =
+
+    0.8991
+
+
+m =
+
+    0.8669
+
+
+b =
+
+    3.3106
+
+
+r =
+
+    0.8641
+
+
+m =
+
+    0.7814
+
+
+b =
+
+    4.6877
+
+
+r =
+
+    0.9011
+
+
+m =
+
+    0.8064
+
+
+b =
+
+    3.8680
+
+
+r =
+
+    0.9070
+
+
+m =
+
+    0.8161
+
+
+b =
+
+    2.8930
+
+
+r =
+
+    0.8681
+
+
+m =
+
+    0.7990
+
+
+b =
+
+    4.2367
+
+
+r =
+
+    0.9575
+
+
+m =
+
+    0.8263
+
+
+b =
+
+    3.1647
+
+
+r =
+
+    0.8223
+
+
+m =
+
+    0.7170
+
+
+b =
+
+    5.7101
+
+
+r =
+
+    0.8769
+
+
+m =
+
+    0.8013
+
+
+b =
+
+    3.9674
+
+
+r =
+
+    0.9154
+
+
+m =
+
+    0.8370
+
+
+b =
+
+    3.3840
+
+
+r =
+
+    0.8382
+
+
+m =
+
+    0.7100
+
+
+b =
+
+    6.3339
+
+
+r =
+
+    0.8851
+
+
+m =
+
+    0.8076
+
+
+b =
+
+    4.0868
+
+
+r =
+
+    0.8282
+
+
+m =
+
+    0.6349
+
+
+b =
+
+    6.7495
+
+
+r =
+
+    0.8961
+
+
+m =
+
+    0.8920
+
+
+b =
+
+    2.3560
+
+
+r =
+
+    0.8872
+
+
+m =
+
+    0.8204
+
+
+b =
+
+    3.4858
+
+
+r =
+
+    0.8380
+
+
+m =
+
+    0.7066
+
+
+b =
+
+    6.5120
+
+
+r =
+
+    0.8739
+
+
+m =
+
+    0.7688
+
+
+b =
+
+    4.9836
+
+
+r =
+
+    0.8822
+
+
+m =
+
+    0.7985
+
+
+b =
+
+    4.4491
+
+
+r =
+
+    0.8764
+
+
+m =
+
+    0.7355
+
+
+b =
+
+    5.0838
+
+
+r =
+
+    0.8546
+
+
+m =
+
+    0.7987
+
+
+b =
+
+    2.8284
+
+
+r =
+
+    0.8677
+
+
+m =
+
+    0.7831
+
+
+b =
+
+    4.5848
+
+
+r =
+
+    0.8430
+
+
+m =
+
+    0.7706
+
+
+b =
+
+    4.2463
+
+
+r =
+
+    0.9309
+
+
+m =
+
+    0.8693
+
+
+b =
+
+    2.2910
+
+
+r =
+
+    0.8922
+
+
+m =
+
+    0.8346
+
+
+b =
+
+    3.5762
+
+
+r =
+
+    0.8440
+
+
+m =
+
+    0.7003
+
+
+b =
+
+    5.3897
+
+
+r =
+
+    0.8340
+
+
+m =
+
+    0.6871
+
+
+b =
+
+    6.5633
+
+
+r =
+
+    0.8835
+
+
+m =
+
+    0.8190
+
+
+b =
+
+    3.9036
+
+
+r =
+
+    0.9061
+
+
+m =
+
+    0.8009
+
+
+b =
+
+    3.1889
+
+
+r =
+
+    0.8188
+
+
+m =
+
+    0.6380
+
+
+b =
+
+    7.3266
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8740
+
+
+m =
+
+    0.7928
+
+
+b =
+
+    4.4690
+
+
+r =
+
+    0.8848
+
+
+m =
+
+    0.7412
+
+
+b =
+
+    4.7549
+
+
+r =
+
+    0.8887
+
+
+m =
+
+    0.8342
+
+
+b =
+
+    2.9443
+
+
+r =
+
+    0.8779
+
+
+m =
+
+    0.7815
+
+
+b =
+
+    4.5907
+
+
+r =
+
+    0.8905
+
+
+m =
+
+    0.8474
+
+
+b =
+
+    2.6652
+
+
+r =
+
+    0.8656
+
+
+m =
+
+    0.8101
+
+
+b =
+
+    3.7953
+
+
+r =
+
+    0.8811
+
+
+m =
+
+    0.7977
+
+
+b =
+
+    4.3819
+
+
+r =
+
+    0.8786
+
+
+m =
+
+    0.7399
+
+
+b =
+
+    4.3048
+
+
+r =
+
+    0.8408
+
+
+m =
+
+    0.7847
+
+
+b =
+
+    4.1372
+
+
+r =
+
+    0.8750
+
+
+m =
+
+    0.7798
+
+
+b =
+
+    4.5147
+
+
+r =
+
+    0.8519
+
+
+m =
+
+    0.8539
+
+
+b =
+
+    3.0148
+
+
+r =
+
+    0.9116
+
+
+m =
+
+    0.8174
+
+
+b =
+
+    3.7153
+
+
+r =
+
+    0.8648
+
+
+m =
+
+    0.7660
+
+
+b =
+
+    4.7172
+
+
+r =
+
+    0.9209
+
+
+m =
+
+    0.8841
+
+
+b =
+
+    3.3196
+
+
+r =
+
+    0.8864
+
+
+m =
+
+    0.8014
+
+
+b =
+
+    3.3424
+
+
+r =
+
+    0.8940
+
+
+m =
+
+    0.8115
+
+
+b =
+
+    3.7398
+
+
+r =
+
+    0.8001
+
+
+m =
+
+    0.7667
+
+
+b =
+
+    4.9108
+
+
+r =
+
+    0.8400
+
+
+m =
+
+    0.7167
+
+
+b =
+
+    6.1038
+
+
+r =
+
+    0.8753
+
+
+m =
+
+    0.8037
+
+
+b =
+
+    4.0072
+
+
+r =
+
+    0.8577
+
+
+m =
+
+    0.8104
+
+
+b =
+
+    4.3317
+
+
+r =
+
+    0.9065
+
+
+m =
+
+    0.7379
+
+
+b =
+
+    4.9799
+
+
+r =
+
+    0.8822
+
+
+m =
+
+    0.7829
+
+
+b =
+
+    4.4866
+
+
+r =
+
+    0.8716
+
+
+m =
+
+    0.9176
+
+
+b =
+
+    1.8144
+
+
+r =
+
+    0.8616
+
+
+m =
+
+    0.7630
+
+
+b =
+
+    4.3915
+
+
+r =
+
+    0.8769
+
+
+m =
+
+    0.7835
+
+
+b =
+
+    4.3489
+
+
+r =
+
+    0.8932
+
+
+m =
+
+    0.8995
+
+
+b =
+
+    1.5975
+
+
+r =
+
+    0.8613
+
+
+m =
+
+    0.7452
+
+
+b =
+
+    5.8530
+
+
+r =
+
+    0.8623
+
+
+m =
+
+    0.7691
+
+
+b =
+
+    4.6853
+
+
+r =
+
+    0.9131
+
+
+m =
+
+    0.8200
+
+
+b =
+
+    4.5683
+
+
+r =
+
+    0.9253
+
+
+m =
+
+    0.8923
+
+
+b =
+
+    1.3944
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8834
+
+
+m =
+
+    0.8041
+
+
+b =
+
+    3.9663
+
+
+r =
+
+    0.8579
+
+
+m =
+
+    0.6786
+
+
+b =
+
+    6.8595
+
+
+r =
+
+    0.8821
+
+
+m =
+
+    0.8702
+
+
+b =
+
+    2.6767
+
+
+r =
+
+    0.8784
+
+
+m =
+
+    0.7984
+
+
+b =
+
+    4.2001
+
+
+r =
+
+    0.8834
+
+
+m =
+
+    0.7316
+
+
+b =
+
+    5.2126
+
+
+r =
+
+    0.8509
+
+
+m =
+
+    0.8286
+
+
+b =
+
+    3.4444
+
+
+r =
+
+    0.8877
+
+
+m =
+
+    0.8056
+
+
+b =
+
+    4.0263
+
+
+r =
+
+    0.8184
+
+
+m =
+
+    0.7938
+
+
+b =
+
+    4.3889
+
+
+r =
+
+    0.8730
+
+
+m =
+
+    0.7479
+
+
+b =
+
+    4.8762
+
+
+r =
+
+    0.8708
+
+
+m =
+
+    0.7860
+
+
+b =
+
+    4.4879
+
+
+r =
+
+    0.9051
+
+
+m =
+
+    0.8581
+
+
+b =
+
+    2.9077
+
+
+r =
+
+    0.8762
+
+
+m =
+
+    0.7602
+
+
+b =
+
+    4.4331
+
+
+r =
+
+    0.8693
+
+
+m =
+
+    0.7659
+
+
+b =
+
+    4.8062
+
+
+r =
+
+    0.9343
+
+
+m =
+
+    0.9606
+
+
+b =
+
+    2.3383
+
+
+r =
+
+    0.8614
+
+
+m =
+
+    0.7809
+
+
+b =
+
+    3.4732
+
+
+r =
+
+    0.8913
+
+
+m =
+
+    0.8078
+
+
+b =
+
+    4.0475
+
+
+r =
+
+    0.8187
+
+
+m =
+
+    0.7495
+
+
+b =
+
+    4.6774
+
+
+r =
+
+    0.8383
+
+
+m =
+
+    0.7409
+
+
+b =
+
+    5.2621
+
+
+r =
+
+    0.8774
+
+
+m =
+
+    0.7623
+
+
+b =
+
+    4.9700
+
+
+r =
+
+    0.8503
+
+
+m =
+
+    0.8369
+
+
+b =
+
+    3.3315
+
+
+r =
+
+    0.9115
+
+
+m =
+
+    0.8973
+
+
+b =
+
+    1.6547
+
+
+r =
+
+    0.8875
+
+
+m =
+
+    0.7761
+
+
+b =
+
+    4.3019
+
+
+r =
+
+    0.8424
+
+
+m =
+
+    0.8567
+
+
+b =
+
+    3.5925
+
+
+r =
+
+    0.8769
+
+
+m =
+
+    0.8574
+
+
+b =
+
+    3.7230
+
+
+r =
+
+    0.8686
+
+
+m =
+
+    0.7783
+
+
+b =
+
+    4.0181
+
+
+r =
+
+    0.9123
+
+
+m =
+
+    0.8531
+
+
+b =
+
+    4.6520
+
+
+r =
+
+    0.8963
+
+
+m =
+
+    0.7987
+
+
+b =
+
+    4.9618
+
+
+r =
+
+    0.8660
+
+
+m =
+
+    0.7964
+
+
+b =
+
+    3.9266
+
+
+r =
+
+    0.9469
+
+
+m =
+
+    0.8444
+
+
+b =
+
+    4.2954
+
+
+r =
+
+    0.8402
+
+
+m =
+
+    0.7137
+
+
+b =
+
+    5.8922
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8637
+
+
+m =
+
+    0.7326
+
+
+b =
+
+    5.5014
+
+
+r =
+
+    0.8951
+
+
+m =
+
+    0.9259
+
+
+b =
+
+    1.8784
+
+
+r =
+
+    0.9241
+
+
+m =
+
+    0.8950
+
+
+b =
+
+    1.6112
+
+
+r =
+
+    0.8754
+
+
+m =
+
+    0.7856
+
+
+b =
+
+    4.4996
+
+
+r =
+
+    0.8171
+
+
+m =
+
+    0.7947
+
+
+b =
+
+    3.9984
+
+
+r =
+
+    0.9179
+
+
+m =
+
+    0.8174
+
+
+b =
+
+    3.4487
+
+
+r =
+
+    0.8738
+
+
+m =
+
+    0.7641
+
+
+b =
+
+    4.8528
+
+
+r =
+
+    0.8791
+
+
+m =
+
+    0.8707
+
+
+b =
+
+    3.0139
+
+
+r =
+
+    0.8969
+
+
+m =
+
+    0.8759
+
+
+b =
+
+    2.2404
+
+
+r =
+
+    0.8799
+
+
+m =
+
+    0.7983
+
+
+b =
+
+    4.0893
+
+
+r =
+
+    0.9035
+
+
+m =
+
+    0.7636
+
+
+b =
+
+    4.7453
+
+
+r =
+
+    0.8298
+
+
+m =
+
+    0.8146
+
+
+b =
+
+    4.1395
+
+
+r =
+
+    0.8658
+
+
+m =
+
+    0.7906
+
+
+b =
+
+    4.2333
+
+
+r =
+
+    0.8634
+
+
+m =
+
+    0.7704
+
+
+b =
+
+    4.3411
+
+
+r =
+
+    0.9236
+
+
+m =
+
+    0.8120
+
+
+b =
+
+    4.4147
+
+
+r =
+
+    0.8930
+
+
+m =
+
+    0.7965
+
+
+b =
+
+    4.4698
+
+
+r =
+
+    0.7833
+
+
+m =
+
+    0.7775
+
+
+b =
+
+    3.6761
+
+
+r =
+
+    0.8782
+
+
+m =
+
+    0.8080
+
+
+b =
+
+    3.4547
+
+
+r =
+
+    0.8696
+
+
+m =
+
+    0.8009
+
+
+b =
+
+    4.1567
+
+
+r =
+
+    0.9039
+
+
+m =
+
+    0.8491
+
+
+b =
+
+    3.2874
+
+
+r =
+
+    0.8756
+
+
+m =
+
+    0.7072
+
+
+b =
+
+    5.7235
+
+
+r =
+
+    0.8735
+
+
+m =
+
+    0.8071
+
+
+b =
+
+    4.0481
+
+
+r =
+
+    0.9128
+
+
+m =
+
+    0.8113
+
+
+b =
+
+    3.5359
+
+
+r =
+
+    0.8220
+
+
+m =
+
+    0.6852
+
+
+b =
+
+    6.3911
+
+
+r =
+
+    0.8766
+
+
+m =
+
+    0.7975
+
+
+b =
+
+    4.1650
+
+
+r =
+
+    0.8389
+
+
+m =
+
+    0.7451
+
+
+b =
+
+    4.8352
+
+
+r =
+
+    0.9076
+
+
+m =
+
+    0.8046
+
+
+b =
+
+    4.1954
+
+
+r =
+
+    0.8797
+
+
+m =
+
+    0.7885
+
+
+b =
+
+    4.2448
+
+
+r =
+
+    0.8399
+
+
+m =
+
+    0.7386
+
+
+b =
+
+    5.4939
+
+
+r =
+
+    0.8987
+
+
+m =
+
+    0.8628
+
+
+b =
+
+    3.2125
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8760
+
+
+m =
+
+    0.7939
+
+
+b =
+
+    4.1792
+
+
+r =
+
+    0.9041
+
+
+m =
+
+    0.7121
+
+
+b =
+
+    5.9723
+
+
+r =
+
+    0.8695
+
+
+m =
+
+    0.8653
+
+
+b =
+
+    2.8439
+
+
+r =
+
+    0.8855
+
+
+m =
+
+    0.8008
+
+
+b =
+
+    3.9960
+
+
+r =
+
+    0.8535
+
+
+m =
+
+    0.7885
+
+
+b =
+
+    4.0825
+
+
+r =
+
+    0.8494
+
+
+m =
+
+    0.7582
+
+
+b =
+
+    5.6198
+
+
+r =
+
+    0.8777
+
+
+m =
+
+    0.7856
+
+
+b =
+
+    4.3507
+
+
+r =
+
+    0.8804
+
+
+m =
+
+    0.7679
+
+
+b =
+
+    4.9392
+
+
+r =
+
+    0.8752
+
+
+m =
+
+    0.8774
+
+
+b =
+
+    2.5839
+
+
+r =
+
+    0.8903
+
+
+m =
+
+    0.8168
+
+
+b =
+
+    3.9182
+
+
+r =
+
+    0.8834
+
+
+m =
+
+    0.7728
+
+
+b =
+
+    4.4034
+
+
+r =
+
+    0.7641
+
+
+m =
+
+    0.6704
+
+
+b =
+
+    6.3772
+
+
+r =
+
+    0.8832
+
+
+m =
+
+    0.7893
+
+
+b =
+
+    4.1290
+
+
+r =
+
+    0.8853
+
+
+m =
+
+    0.8588
+
+
+b =
+
+    2.9457
+
+
+r =
+
+    0.8434
+
+
+m =
+
+    0.7655
+
+
+b =
+
+    5.6557
+
+
+r =
+
+    0.8822
+
+
+m =
+
+    0.7962
+
+
+b =
+
+    4.1805
+
+
+r =
+
+    0.8832
+
+
+m =
+
+    0.7157
+
+
+b =
+
+    5.6800
+
+
+r =
+
+    0.8588
+
+
+m =
+
+    0.8801
+
+
+b =
+
+    2.5136
+
+
+r =
+
+    0.8791
+
+
+m =
+
+    0.7891
+
+
+b =
+
+    4.2044
+
+
+r =
+
+    0.8394
+
+
+m =
+
+    0.7379
+
+
+b =
+
+    6.0881
+
+
+r =
+
+    0.8833
+
+
+m =
+
+    0.8366
+
+
+b =
+
+    3.2812
+
+
+r =
+
+    0.8788
+
+
+m =
+
+    0.7906
+
+
+b =
+
+    4.2876
+
+
+r =
+
+    0.8538
+
+
+m =
+
+    0.7180
+
+
+b =
+
+    5.6571
+
+
+r =
+
+    0.8882
+
+
+m =
+
+    0.8835
+
+
+b =
+
+    2.3714
+
+
+r =
+
+    0.8800
+
+
+m =
+
+    0.8095
+
+
+b =
+
+    4.3017
+
+
+r =
+
+    0.8751
+
+
+m =
+
+    0.7919
+
+
+b =
+
+    2.5696
+
+
+r =
+
+    0.9036
+
+
+m =
+
+    0.7606
+
+
+b =
+
+    4.8054
+
+
+r =
+
+    0.8584
+
+
+m =
+
+    0.7941
+
+
+b =
+
+    4.0634
+
+
+r =
+
+    0.9148
+
+
+m =
+
+    0.8150
+
+
+b =
+
+    3.5224
+
+
+r =
+
+    0.9160
+
+
+m =
+
+    0.7803
+
+
+b =
+
+    5.4958
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8876
+
+
+m =
+
+    0.7950
+
+
+b =
+
+    4.1096
+
+
+r =
+
+    0.8178
+
+
+m =
+
+    0.7156
+
+
+b =
+
+    6.3295
+
+
+r =
+
+    0.8798
+
+
+m =
+
+    0.8771
+
+
+b =
+
+    2.4521
+
+
+r =
+
+    0.8642
+
+
+m =
+
+    0.7653
+
+
+b =
+
+    4.8532
+
+
+r =
+
+    0.8660
+
+
+m =
+
+    0.8138
+
+
+b =
+
+    3.1868
+
+
+r =
+
+    0.9446
+
+
+m =
+
+    0.9391
+
+
+b =
+
+    1.3461
+
+
+r =
+
+    0.8841
+
+
+m =
+
+    0.8255
+
+
+b =
+
+    3.7464
+
+
+r =
+
+    0.8548
+
+
+m =
+
+    0.6973
+
+
+b =
+
+    5.2515
+
+
+r =
+
+    0.8754
+
+
+m =
+
+    0.7379
+
+
+b =
+
+    5.4896
+
+
+r =
+
+    0.8690
+
+
+m =
+
+    0.7968
+
+
+b =
+
+    4.1830
+
+
+r =
+
+    0.9304
+
+
+m =
+
+    0.8533
+
+
+b =
+
+    4.0393
+
+
+r =
+
+    0.8501
+
+
+m =
+
+    0.6668
+
+
+b =
+
+    5.5200
+
+
+r =
+
+    0.8547
+
+
+m =
+
+    0.7416
+
+
+b =
+
+    4.9887
+
+
+r =
+
+    0.9194
+
+
+m =
+
+    0.8798
+
+
+b =
+
+    3.0306
+
+
+r =
+
+    0.9218
+
+
+m =
+
+    0.9075
+
+
+b =
+
+    2.3682
+
+
+r =
+
+    0.8899
+
+
+m =
+
+    0.7908
+
+
+b =
+
+    4.4377
+
+
+r =
+
+    0.8284
+
+
+m =
+
+    0.7132
+
+
+b =
+
+    5.1370
+
+
+r =
+
+    0.8630
+
+
+m =
+
+    0.9365
+
+
+b =
+
+    1.6848
+
+
+r =
+
+    0.8699
+
+
+m =
+
+    0.7721
+
+
+b =
+
+    4.5072
+
+
+r =
+
+    0.8839
+
+
+m =
+
+    0.8355
+
+
+b =
+
+    3.2372
+
+
+r =
+
+    0.9050
+
+
+m =
+
+    0.8424
+
+
+b =
+
+    4.0770
+
+
+r =
+
+    0.8808
+
+
+m =
+
+    0.7783
+
+
+b =
+
+    4.7704
+
+
+r =
+
+    0.8598
+
+
+m =
+
+    0.8046
+
+
+b =
+
+    3.1506
+
+
+r =
+
+    0.8863
+
+
+m =
+
+    0.8572
+
+
+b =
+
+    2.7319
+
+
+r =
+
+    0.8859
+
+
+m =
+
+    0.8109
+
+
+b =
+
+    4.0914
+
+
+r =
+
+    0.8283
+
+
+m =
+
+    0.6716
+
+
+b =
+
+    5.3323
+
+
+r =
+
+    0.8390
+
+
+m =
+
+    0.7732
+
+
+b =
+
+    4.4611
+
+
+r =
+
+    0.8797
+
+
+m =
+
+    0.7910
+
+
+b =
+
+    3.9743
+
+
+r =
+
+    0.8983
+
+
+m =
+
+    0.8686
+
+
+b =
+
+    3.0688
+
+
+r =
+
+    0.8464
+
+
+m =
+
+    0.7118
+
+
+b =
+
+    6.7485
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8823
+
+
+m =
+
+    0.8082
+
+
+b =
+
+    3.9227
+
+
+r =
+
+    0.8370
+
+
+m =
+
+    0.6956
+
+
+b =
+
+    5.8725
+
+
+r =
+
+    0.8976
+
+
+m =
+
+    0.8342
+
+
+b =
+
+    3.9217
+
+
+r =
+
+    0.8787
+
+
+m =
+
+    0.8091
+
+
+b =
+
+    3.6386
+
+
+r =
+
+    0.9071
+
+
+m =
+
+    0.7477
+
+
+b =
+
+    6.6905
+
+
+r =
+
+    0.8563
+
+
+m =
+
+    0.7496
+
+
+b =
+
+    4.9505
+
+
+r =
+
+    0.8720
+
+
+m =
+
+    0.7887
+
+
+b =
+
+    4.6617
+
+
+r =
+
+    0.8606
+
+
+m =
+
+    0.7576
+
+
+b =
+
+    4.1724
+
+
+r =
+
+    0.9200
+
+
+m =
+
+    0.8483
+
+
+b =
+
+    2.4459
+
+
+r =
+
+    0.8792
+
+
+m =
+
+    0.7722
+
+
+b =
+
+    4.6618
+
+
+r =
+
+    0.9168
+
+
+m =
+
+    0.8703
+
+
+b =
+
+    1.7122
+
+
+r =
+
+    0.8491
+
+
+m =
+
+    0.8392
+
+
+b =
+
+    4.3094
+
+
+r =
+
+    0.8878
+
+
+m =
+
+    0.8104
+
+
+b =
+
+    3.8371
+
+
+r =
+
+    0.8807
+
+
+m =
+
+    0.8013
+
+
+b =
+
+    4.7991
+
+
+r =
+
+    0.7580
+
+
+m =
+
+    0.6282
+
+
+b =
+
+    6.3232
+
+
+r =
+
+    0.8904
+
+
+m =
+
+    0.8063
+
+
+b =
+
+    3.9922
+
+
+r =
+
+    0.8141
+
+
+m =
+
+    0.7350
+
+
+b =
+
+    4.7491
+
+
+r =
+
+    0.8509
+
+
+m =
+
+    0.7606
+
+
+b =
+
+    5.5509
+
+
+r =
+
+    0.8669
+
+
+m =
+
+    0.7683
+
+
+b =
+
+    4.6132
+
+
+r =
+
+    0.8981
+
+
+m =
+
+    0.9123
+
+
+b =
+
+    2.9652
+
+
+r =
+
+    0.9107
+
+
+m =
+
+    0.8417
+
+
+b =
+
+    2.9377
+
+
+r =
+
+    0.8770
+
+
+m =
+
+    0.7970
+
+
+b =
+
+    4.1759
+
+
+r =
+
+    0.8425
+
+
+m =
+
+    0.7413
+
+
+b =
+
+    5.0835
+
+
+r =
+
+    0.9080
+
+
+m =
+
+    0.8260
+
+
+b =
+
+    3.6377
+
+
+r =
+
+    0.8891
+
+
+m =
+
+    0.8054
+
+
+b =
+
+    3.9780
+
+
+r =
+
+    0.7553
+
+
+m =
+
+    0.6471
+
+
+b =
+
+    6.9092
+
+
+r =
+
+    0.8890
+
+
+m =
+
+    0.8330
+
+
+b =
+
+    3.7817
+
+
+r =
+
+    0.8895
+
+
+m =
+
+    0.8048
+
+
+b =
+
+    4.0253
+
+
+r =
+
+    0.7981
+
+
+m =
+
+    0.7758
+
+
+b =
+
+    4.3643
+
+
+r =
+
+    0.8841
+
+
+m =
+
+    0.7586
+
+
+b =
+
+    5.0249
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8815
+
+
+m =
+
+    0.7868
+
+
+b =
+
+    4.3009
+
+
+r =
+
+    0.8703
+
+
+m =
+
+    0.8392
+
+
+b =
+
+    3.2351
+
+
+r =
+
+    0.8659
+
+
+m =
+
+    0.7729
+
+
+b =
+
+    5.0294
+
+
+r =
+
+    0.8640
+
+
+m =
+
+    0.7919
+
+
+b =
+
+    4.1920
+
+
+r =
+
+    0.8853
+
+
+m =
+
+    0.7722
+
+
+b =
+
+    3.9907
+
+
+r =
+
+    0.9205
+
+
+m =
+
+    0.8142
+
+
+b =
+
+    4.8161
+
+
+r =
+
+    0.8740
+
+
+m =
+
+    0.7945
+
+
+b =
+
+    4.4736
+
+
+r =
+
+    0.9047
+
+
+m =
+
+    0.8067
+
+
+b =
+
+    3.2616
+
+
+r =
+
+    0.8717
+
+
+m =
+
+    0.7857
+
+
+b =
+
+    3.8847
+
+
+r =
+
+    0.8779
+
+
+m =
+
+    0.8125
+
+
+b =
+
+    3.9704
+
+
+r =
+
+    0.8492
+
+
+m =
+
+    0.7322
+
+
+b =
+
+    5.5334
+
+
+r =
+
+    0.9007
+
+
+m =
+
+    0.7841
+
+
+b =
+
+    3.6652
+
+
+r =
+
+    0.8776
+
+
+m =
+
+    0.7961
+
+
+b =
+
+    4.4120
+
+
+r =
+
+    0.8697
+
+
+m =
+
+    0.8080
+
+
+b =
+
+    3.6966
+
+
+r =
+
+    0.8895
+
+
+m =
+
+    0.7719
+
+
+b =
+
+    3.8489
+
+
+r =
+
+    0.8751
+
+
+m =
+
+    0.7992
+
+
+b =
+
+    4.2121
+
+
+r =
+
+    0.8571
+
+
+m =
+
+    0.7429
+
+
+b =
+
+    5.1329
+
+
+r =
+
+    0.8978
+
+
+m =
+
+    0.8072
+
+
+b =
+
+    3.5297
+
+
+r =
+
+    0.8607
+
+
+m =
+
+    0.7860
+
+
+b =
+
+    4.4566
+
+
+r =
+
+    0.8955
+
+
+m =
+
+    0.7847
+
+
+b =
+
+    3.4817
+
+
+r =
+
+    0.9012
+
+
+m =
+
+    0.7940
+
+
+b =
+
+    4.7485
+
+
+r =
+
+    0.8718
+
+
+m =
+
+    0.7817
+
+
+b =
+
+    4.4078
+
+
+r =
+
+    0.9109
+
+
+m =
+
+    0.7778
+
+
+b =
+
+    5.3894
+
+
+r =
+
+    0.8809
+
+
+m =
+
+    0.9153
+
+
+b =
+
+    1.0375
+
+
+r =
+
+    0.8897
+
+
+m =
+
+    0.7890
+
+
+b =
+
+    4.2715
+
+
+r =
+
+    0.8427
+
+
+m =
+
+    0.7574
+
+
+b =
+
+    4.8493
+
+
+r =
+
+    0.8531
+
+
+m =
+
+    0.8444
+
+
+b =
+
+    3.5756
+
+
+r =
+
+    0.8692
+
+
+m =
+
+    0.7789
+
+
+b =
+
+    4.1906
+
+
+r =
+
+    0.9132
+
+
+m =
+
+    0.8145
+
+
+b =
+
+    4.5605
+
+
+r =
+
+    0.8809
+
+
+m =
+
+    0.8299
+
+
+b =
+
+    4.2799
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8684
+
+
+m =
+
+    0.7661
+
+
+b =
+
+    4.6219
+
+
+r =
+
+    0.9073
+
+
+m =
+
+    0.8613
+
+
+b =
+
+    2.7720
+
+
+r =
+
+    0.8913
+
+
+m =
+
+    0.8580
+
+
+b =
+
+    3.9995
+
+
+r =
+
+    0.8583
+
+
+m =
+
+    0.7931
+
+
+b =
+
+    4.2242
+
+
+r =
+
+    0.8950
+
+
+m =
+
+    0.7939
+
+
+b =
+
+    4.2766
+
+
+r =
+
+    0.9265
+
+
+m =
+
+    0.7944
+
+
+b =
+
+    4.2264
+
+
+r =
+
+    0.8860
+
+
+m =
+
+    0.7885
+
+
+b =
+
+    4.5185
+
+
+r =
+
+    0.8359
+
+
+m =
+
+    0.8031
+
+
+b =
+
+    3.6096
+
+
+r =
+
+    0.8775
+
+
+m =
+
+    0.7983
+
+
+b =
+
+    3.7028
+
+
+r =
+
+    0.8874
+
+
+m =
+
+    0.8017
+
+
+b =
+
+    4.1496
+
+
+r =
+
+    0.8567
+
+
+m =
+
+    0.7976
+
+
+b =
+
+    4.2007
+
+
+r =
+
+    0.8373
+
+
+m =
+
+    0.7459
+
+
+b =
+
+    4.7162
+
+
+r =
+
+    0.8651
+
+
+m =
+
+    0.8066
+
+
+b =
+
+    3.9918
+
+
+r =
+
+    0.8965
+
+
+m =
+
+    0.7713
+
+
+b =
+
+    4.8631
+
+
+r =
+
+    0.9192
+
+
+m =
+
+    0.7550
+
+
+b =
+
+    4.6644
+
+
+r =
+
+    0.8869
+
+
+m =
+
+    0.8034
+
+
+b =
+
+    4.3565
+
+
+r =
+
+    0.8665
+
+
+m =
+
+    0.8151
+
+
+b =
+
+    2.6322
+
+
+r =
+
+    0.8541
+
+
+m =
+
+    0.7464
+
+
+b =
+
+    4.9123
+
+
+r =
+
+    0.8785
+
+
+m =
+
+    0.8028
+
+
+b =
+
+    4.0580
+
+
+r =
+
+    0.7999
+
+
+m =
+
+    0.7265
+
+
+b =
+
+    6.0308
+
+
+r =
+
+    0.9084
+
+
+m =
+
+    0.7843
+
+
+b =
+
+    4.0596
+
+
+r =
+
+    0.8622
+
+
+m =
+
+    0.7600
+
+
+b =
+
+    4.7616
+
+
+r =
+
+    0.9220
+
+
+m =
+
+    0.8868
+
+
+b =
+
+    2.2235
+
+
+r =
+
+    0.8982
+
+
+m =
+
+    0.8481
+
+
+b =
+
+    3.7508
+
+
+r =
+
+    0.8840
+
+
+m =
+
+    0.7903
+
+
+b =
+
+    4.3246
+
+
+r =
+
+    0.8356
+
+
+m =
+
+    0.7935
+
+
+b =
+
+    3.8279
+
+
+r =
+
+    0.8905
+
+
+m =
+
+    0.8182
+
+
+b =
+
+    4.0321
+
+
+r =
+
+    0.8783
+
+
+m =
+
+    0.7946
+
+
+b =
+
+    3.9724
+
+
+r =
+
+    0.8401
+
+
+m =
+
+    0.7734
+
+
+b =
+
+    4.4367
+
+
+r =
+
+    0.9138
+
+
+m =
+
+    0.7952
+
+
+b =
+
+    5.5024
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8820
+
+
+m =
+
+    0.7760
+
+
+b =
+
+    4.6761
+
+
+r =
+
+    0.8726
+
+
+m =
+
+    0.8067
+
+
+b =
+
+    4.0338
+
+
+r =
+
+    0.8697
+
+
+m =
+
+    0.8834
+
+
+b =
+
+    1.8549
+
+
+r =
+
+    0.8818
+
+
+m =
+
+    0.7990
+
+
+b =
+
+    4.2771
+
+
+r =
+
+    0.8377
+
+
+m =
+
+    0.7692
+
+
+b =
+
+    4.4368
+
+
+r =
+
+    0.8823
+
+
+m =
+
+    0.7898
+
+
+b =
+
+    3.8958
+
+
+r =
+
+    0.8810
+
+
+m =
+
+    0.8218
+
+
+b =
+
+    3.5863
+
+
+r =
+
+    0.9018
+
+
+m =
+
+    0.7605
+
+
+b =
+
+    4.6711
+
+
+r =
+
+    0.8412
+
+
+m =
+
+    0.6829
+
+
+b =
+
+    6.9821
+
+
+r =
+
+    0.8609
+
+
+m =
+
+    0.7634
+
+
+b =
+
+    4.9215
+
+
+r =
+
+    0.9074
+
+
+m =
+
+    0.8456
+
+
+b =
+
+    2.6716
+
+
+r =
+
+    0.9067
+
+
+m =
+
+    0.8764
+
+
+b =
+
+    2.5136
+
+
+r =
+
+    0.8799
+
+
+m =
+
+    0.8114
+
+
+b =
+
+    3.7876
+
+
+r =
+
+    0.8640
+
+
+m =
+
+    0.7598
+
+
+b =
+
+    5.4796
+
+
+r =
+
+    0.8565
+
+
+m =
+
+    0.7276
+
+
+b =
+
+    5.1240
+
+
+r =
+
+    0.8802
+
+
+m =
+
+    0.7940
+
+
+b =
+
+    4.4422
+
+
+r =
+
+    0.8747
+
+
+m =
+
+    0.8243
+
+
+b =
+
+    3.5719
+
+
+r =
+
+    0.8740
+
+
+m =
+
+    0.7616
+
+
+b =
+
+    3.8687
+
+
+r =
+
+    0.8776
+
+
+m =
+
+    0.7876
+
+
+b =
+
+    4.1404
+
+
+r =
+
+    0.9079
+
+
+m =
+
+    0.8453
+
+
+b =
+
+    3.7922
+
+
+r =
+
+    0.8249
+
+
+m =
+
+    0.7460
+
+
+b =
+
+    5.6308
+
+
+r =
+
+    0.8825
+
+
+m =
+
+    0.7940
+
+
+b =
+
+    4.4501
+
+
+r =
+
+    0.8276
+
+
+m =
+
+    0.6982
+
+
+b =
+
+    4.6121
+
+
+r =
+
+    0.9018
+
+
+m =
+
+    0.8577
+
+
+b =
+
+    3.1587
+
+
+r =
+
+    0.8606
+
+
+m =
+
+    0.7822
+
+
+b =
+
+    4.1877
+
+
+r =
+
+    0.9442
+
+
+m =
+
+    0.8892
+
+
+b =
+
+    3.0183
+
+
+r =
+
+    0.8264
+
+
+m =
+
+    0.7030
+
+
+b =
+
+    6.6352
+
+
+r =
+
+    0.8634
+
+
+m =
+
+    0.7776
+
+
+b =
+
+    4.6107
+
+
+r =
+
+    0.8822
+
+
+m =
+
+    0.8766
+
+
+b =
+
+    2.2438
+
+
+r =
+
+    0.9178
+
+
+m =
+
+    0.7898
+
+
+b =
+
+    4.2942
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8555
+
+
+m =
+
+    0.7727
+
+
+b =
+
+    4.5130
+
+
+r =
+
+    0.9087
+
+
+m =
+
+    0.7863
+
+
+b =
+
+    4.5003
+
+
+r =
+
+    0.9247
+
+
+m =
+
+    0.8841
+
+
+b =
+
+    2.8687
+
+
+r =
+
+    0.8622
+
+
+m =
+
+    0.7919
+
+
+b =
+
+    4.1087
+
+
+r =
+
+    0.9122
+
+
+m =
+
+    0.8196
+
+
+b =
+
+    4.2064
+
+
+r =
+
+    0.9206
+
+
+m =
+
+    0.7868
+
+
+b =
+
+    4.6367
+
+
+r =
+
+    0.8763
+
+
+m =
+
+    0.7797
+
+
+b =
+
+    4.4635
+
+
+r =
+
+    0.8634
+
+
+m =
+
+    0.7549
+
+
+b =
+
+    6.0293
+
+
+r =
+
+    0.9081
+
+
+m =
+
+    0.8859
+
+
+b =
+
+    1.5228
+
+
+r =
+
+    0.8741
+
+
+m =
+
+    0.7768
+
+
+b =
+
+    4.7320
+
+
+r =
+
+    0.8651
+
+
+m =
+
+    0.8187
+
+
+b =
+
+    2.9108
+
+
+r =
+
+    0.9050
+
+
+m =
+
+    0.8563
+
+
+b =
+
+    3.0052
+
+
+r =
+
+    0.8671
+
+
+m =
+
+    0.7587
+
+
+b =
+
+    4.6145
+
+
+r =
+
+    0.9335
+
+
+m =
+
+    0.8106
+
+
+b =
+
+    4.6109
+
+
+r =
+
+    0.8971
+
+
+m =
+
+    0.9867
+
+
+b =
+
+    0.8254
+
+
+r =
+
+    0.8735
+
+
+m =
+
+    0.8095
+
+
+b =
+
+    3.8674
+
+
+r =
+
+    0.9172
+
+
+m =
+
+    0.7820
+
+
+b =
+
+    4.8057
+
+
+r =
+
+    0.8523
+
+
+m =
+
+    0.7286
+
+
+b =
+
+    5.4215
+
+
+r =
+
+    0.8810
+
+
+m =
+
+    0.8107
+
+
+b =
+
+    4.1685
+
+
+r =
+
+    0.9146
+
+
+m =
+
+    0.7957
+
+
+b =
+
+    4.3354
+
+
+r =
+
+    0.7902
+
+
+m =
+
+    0.6809
+
+
+b =
+
+    5.0152
+
+
+r =
+
+    0.8869
+
+
+m =
+
+    0.8163
+
+
+b =
+
+    4.1189
+
+
+r =
+
+    0.8880
+
+
+m =
+
+    0.7528
+
+
+b =
+
+    3.9659
+
+
+r =
+
+    0.8179
+
+
+m =
+
+    0.6975
+
+
+b =
+
+    5.6041
+
+
+r =
+
+    0.8811
+
+
+m =
+
+    0.7756
+
+
+b =
+
+    4.3249
+
+
+r =
+
+    0.8580
+
+
+m =
+
+    0.8954
+
+
+b =
+
+    3.6031
+
+
+r =
+
+    0.9100
+
+
+m =
+
+    0.8193
+
+
+b =
+
+    3.8112
+
+
+r =
+
+    0.8869
+
+
+m =
+
+    0.8299
+
+
+b =
+
+    3.5497
+
+
+r =
+
+    0.8567
+
+
+m =
+
+    0.6871
+
+
+b =
+
+    6.7492
+
+
+r =
+
+    0.8588
+
+
+m =
+
+    0.7206
+
+
+b =
+
+    4.8965
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8687
+
+
+m =
+
+    0.7901
+
+
+b =
+
+    4.2380
+
+
+r =
+
+    0.8671
+
+
+m =
+
+    0.8296
+
+
+b =
+
+    3.3199
+
+
+r =
+
+    0.9255
+
+
+m =
+
+    0.7846
+
+
+b =
+
+    4.8937
+
+
+r =
+
+    0.8846
+
+
+m =
+
+    0.7937
+
+
+b =
+
+    4.2024
+
+
+r =
+
+    0.9131
+
+
+m =
+
+    0.9198
+
+
+b =
+
+    1.3948
+
+
+r =
+
+    0.8041
+
+
+m =
+
+    0.6521
+
+
+b =
+
+    7.6145
+
+
+r =
+
+    0.8782
+
+
+m =
+
+    0.7738
+
+
+b =
+
+    4.3837
+
+
+r =
+
+    0.8471
+
+
+m =
+
+    0.7990
+
+
+b =
+
+    4.8960
+
+
+r =
+
+    0.8938
+
+
+m =
+
+    0.8700
+
+
+b =
+
+    2.8490
+
+
+r =
+
+    0.8774
+
+
+m =
+
+    0.8123
+
+
+b =
+
+    3.9287
+
+
+r =
+
+    0.8848
+
+
+m =
+
+    0.7825
+
+
+b =
+
+    5.2464
+
+
+r =
+
+    0.8879
+
+
+m =
+
+    0.7366
+
+
+b =
+
+    4.3072
+
+
+r =
+
+    0.8765
+
+
+m =
+
+    0.8071
+
+
+b =
+
+    4.0121
+
+
+r =
+
+    0.9244
+
+
+m =
+
+    0.8411
+
+
+b =
+
+    3.5435
+
+
+r =
+
+    0.8315
+
+
+m =
+
+    0.6758
+
+
+b =
+
+    6.1172
+
+
+r =
+
+    0.8742
+
+
+m =
+
+    0.7910
+
+
+b =
+
+    4.3850
+
+
+r =
+
+    0.8626
+
+
+m =
+
+    0.7509
+
+
+b =
+
+    4.0336
+
+
+r =
+
+    0.8737
+
+
+m =
+
+    0.7975
+
+
+b =
+
+    4.5409
+
+
+r =
+
+    0.8781
+
+
+m =
+
+    0.8099
+
+
+b =
+
+    3.7100
+
+
+r =
+
+    0.8879
+
+
+m =
+
+    0.7189
+
+
+b =
+
+    5.9898
+
+
+r =
+
+    0.8615
+
+
+m =
+
+    0.7723
+
+
+b =
+
+    5.2818
+
+
+r =
+
+    0.8936
+
+
+m =
+
+    0.8117
+
+
+b =
+
+    3.8321
+
+
+r =
+
+    0.7859
+
+
+m =
+
+    0.6582
+
+
+b =
+
+    6.4715
+
+
+r =
+
+    0.8579
+
+
+m =
+
+    0.8102
+
+
+b =
+
+    4.3039
+
+
+r =
+
+    0.8773
+
+
+m =
+
+    0.8063
+
+
+b =
+
+    4.0758
+
+
+r =
+
+    0.8649
+
+
+m =
+
+    0.7308
+
+
+b =
+
+    5.7530
+
+
+r =
+
+    0.8869
+
+
+m =
+
+    0.7892
+
+
+b =
+
+    3.7009
+
+
+r =
+
+    0.8793
+
+
+m =
+
+    0.7869
+
+
+b =
+
+    4.4449
+
+
+r =
+
+    0.8578
+
+
+m =
+
+    0.7253
+
+
+b =
+
+    4.9936
+
+
+r =
+
+    0.8939
+
+
+m =
+
+    0.9053
+
+
+b =
+
+    2.4218
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8788
+
+
+m =
+
+    0.7886
+
+
+b =
+
+    4.1802
+
+
+r =
+
+    0.8761
+
+
+m =
+
+    0.7465
+
+
+b =
+
+    5.7106
+
+
+r =
+
+    0.8798
+
+
+m =
+
+    0.8954
+
+
+b =
+
+    2.4619
+
+
+r =
+
+    0.8758
+
+
+m =
+
+    0.7894
+
+
+b =
+
+    4.2254
+
+
+r =
+
+    0.8804
+
+
+m =
+
+    0.8249
+
+
+b =
+
+    2.9014
+
+
+r =
+
+    0.8867
+
+
+m =
+
+    0.7673
+
+
+b =
+
+    5.8689
+
+
+r =
+
+    0.8740
+
+
+m =
+
+    0.7949
+
+
+b =
+
+    4.1755
+
+
+r =
+
+    0.8895
+
+
+m =
+
+    0.7582
+
+
+b =
+
+    4.5063
+
+
+r =
+
+    0.8811
+
+
+m =
+
+    0.8328
+
+
+b =
+
+    3.9801
+
+
+r =
+
+    0.8755
+
+
+m =
+
+    0.8059
+
+
+b =
+
+    3.9363
+
+
+r =
+
+    0.8384
+
+
+m =
+
+    0.8034
+
+
+b =
+
+    4.2895
+
+
+r =
+
+    0.9078
+
+
+m =
+
+    0.7552
+
+
+b =
+
+    4.9816
+
+
+r =
+
+    0.8865
+
+
+m =
+
+    0.7794
+
+
+b =
+
+    4.1330
+
+
+r =
+
+    0.8806
+
+
+m =
+
+    0.8259
+
+
+b =
+
+    4.7813
+
+
+r =
+
+    0.8392
+
+
+m =
+
+    0.8360
+
+
+b =
+
+    3.9346
+
+
+r =
+
+    0.8672
+
+
+m =
+
+    0.7628
+
+
+b =
+
+    4.7546
+
+
+r =
+
+    0.9128
+
+
+m =
+
+    0.8995
+
+
+b =
+
+    2.8935
+
+
+r =
+
+    0.8935
+
+
+m =
+
+    0.8254
+
+
+b =
+
+    3.1924
+
+
+r =
+
+    0.8830
+
+
+m =
+
+    0.8202
+
+
+b =
+
+    3.5451
+
+
+r =
+
+    0.9007
+
+
+m =
+
+    0.7395
+
+
+b =
+
+    5.1520
+
+
+r =
+
+    0.8101
+
+
+m =
+
+    0.7024
+
+
+b =
+
+    6.9745
+
+
+r =
+
+    0.8773
+
+
+m =
+
+    0.8100
+
+
+b =
+
+    3.9930
+
+
+r =
+
+    0.8862
+
+
+m =
+
+    0.7959
+
+
+b =
+
+    4.4213
+
+
+r =
+
+    0.8725
+
+
+m =
+
+    0.6826
+
+
+b =
+
+    5.6227
+
+
+r =
+
+    0.8588
+
+
+m =
+
+    0.7550
+
+
+b =
+
+    4.8570
+
+
+r =
+
+    0.9471
+
+
+m =
+
+    0.9125
+
+
+b =
+
+    1.1206
+
+
+r =
+
+    0.8254
+
+
+m =
+
+    0.7542
+
+
+b =
+
+    6.0285
+
+
+r =
+
+    0.8837
+
+
+m =
+
+    0.8075
+
+
+b =
+
+    4.0442
+
+
+r =
+
+    0.8591
+
+
+m =
+
+    0.7129
+
+
+b =
+
+    5.1675
+
+
+r =
+
+    0.8637
+
+
+m =
+
+    0.7982
+
+
+b =
+
+    4.4015
+
+
+N =
+
+    10
+
+
+r =
+
+    0.8665
+
+
+m =
+
+    0.7939
+
+
+b =
+
+    4.1671
+
+
+r =
+
+    0.8493
+
+
+m =
+
+    0.7172
+
+
+b =
+
+    5.7956
+
+
+r =
+
+    0.9375
+
+
+m =
+
+    0.8715
+
+
+b =
+
+    3.1786
+
+
+r =
+
+    0.8650
+
+
+m =
+
+    0.7678
+
+
+b =
+
+    4.5625
+
+
+r =
+
+    0.9241
+
+
+m =
+
+    0.9234
+
+
+b =
+
+    2.5090
+
+
+r =
+
+    0.8768
+
+
+m =
+
+    0.7603
+
+
+b =
+
+    4.6532
+
+
+r =
+
+    0.8772
+
+
+m =
+
+    0.7949
+
+
+b =
+
+    4.1391
+
+
+r =
+
+    0.8603
+
+
+m =
+
+    0.7708
+
+
+b =
+
+    3.9471
+
+
+r =
+
+    0.8953
+
+
+m =
+
+    0.7846
+
+
+b =
+
+    5.4515
+
+
+r =
+
+    0.8769
+
+
+m =
+
+    0.8074
+
+
+b =
+
+    3.9625
+
+
+r =
+
+    0.8765
+
+
+m =
+
+    0.7667
+
+
+b =
+
+    4.7669
+
+
+r =
+
+    0.8627
+
+
+m =
+
+    0.7488
+
+
+b =
+
+    5.2644
+
+
+r =
+
+    0.8861
+
+
+m =
+
+    0.8110
+
+
+b =
+
+    3.7869
+
+
+r =
+
+    0.8597
+
+
+m =
+
+    0.7236
+
+
+b =
+
+    6.1736
+
+
+r =
+
+    0.8530
+
+
+m =
+
+    0.7758
+
+
+b =
+
+    4.5691
+
+
+r =
+
+    0.8723
+
+
+m =
+
+    0.7834
+
+
+b =
+
+    4.1747
+
+
+r =
+
+    0.9020
+
+
+m =
+
+    0.8535
+
+
+b =
+
+    3.4017
+
+
+r =
+
+    0.8847
+
+
+m =
+
+    0.7860
+
+
+b =
+
+    5.2211
+
+
+r =
+
+    0.8549
+
+
+m =
+
+    0.7665
+
+
+b =
+
+    4.6816
+
+
+r =
+
+    0.9283
+
+
+m =
+
+    0.8019
+
+
+b =
+
+    4.8943
+
+
+r =
+
+    0.9128
+
+
+m =
+
+    0.8954
+
+
+b =
+
+    1.5273
+
+
+r =
+
+    0.8747
+
+
+m =
+
+    0.8155
+
+
+b =
+
+    3.7522
+
+
+r =
+
+    0.8579
+
+
+m =
+
+    0.7092
+
+
+b =
+
+    5.9694
+
+
+r =
+
+    0.9034
+
+
+m =
+
+    0.8038
+
+
+b =
+
+    4.4136
+
+
+r =
+
+    0.8754
+
+
+m =
+
+    0.7891
+
+
+b =
+
+    4.0449
+
+
+r =
+
+    0.8653
+
+
+m =
+
+    0.7793
+
+
+b =
+
+    5.3780
+
+
+r =
+
+    0.8950
+
+
+m =
+
+    0.8143
+
+
+b =
+
+    4.2545
+
+
+r =
+
+    0.8611
+
+
+m =
+
+    0.7491
+
+
+b =
+
+    5.0781
+
+
+r =
+
+    0.8954
+
+
+m =
+
+    0.8253
+
+
+b =
+
+    3.6790
+
+
+r =
+
+    0.9260
+
+
+m =
+
+    0.9582
+
+
+b =
+
+    0.9292
+
+</pre><img vspace="5" hspace="5" src="BodyFatEstimationExample_LABOR_L_10.png" style="width:560px;height:420px;" alt=""> <h2 id="17">3 B Nutzen Sie PCA zur Datenreduction</h2><p class="footer">Copyright 2010-2016 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Body Fat Estimation LABORVERSUCH HSM 
+% This example illustrates how a function fitting neural network can estimate
+% body fat percentage based on anatomical measurements.
+
+%   Copyright 2010-2016 The MathWorks, Inc.
+
+%% The Problem: Estimate Body Fat Percentage
+% In this example we attempt to build a neural network that can estimate
+% the body fat percentage of a person described by thirteen
+% physical attributes:
+%
+% * Age (years)
+% * Weight (lbs)
+% * Height (inches)
+% * Neck circumference (cm)
+% * Chest circumference (cm)
+% * Abdomen 2 circumference (cm)
+% * Hip circumference (cm)
+% * Thigh circumference (cm)
+% * Knee circumference (cm)
+% * Ankle circumference (cm)
+% * Biceps (extended) circumference (cm)
+% * Forearm circumference (cm)
+% * Wrist circumference (cm)
+%
+% This is an example of a fitting problem, where inputs are matched up to
+% associated target outputs, and we would like to create a neural network
+% which not only estimates the known targets given known inputs, but can
+% generalize to accurately estimate outputs for inputs that were not
+% used to design the solution.
+%
+%% Why Neural Networks?
+% Neural networks are very good at function fit problems.  A neural network
+% with enough elements (called neurons) can fit any data with arbitrary
+% accuracy. They are particularly well suited for addressing nonlinear
+% problems. Given the nonlinear nature of real world phenomena, like
+% like body fat accretion, neural networks are a good candidate for solving
+% the problem.
+%
+% The thirteen physical attributes will act as inputs to a neural
+% network, and the body fat percentage will be the target.
+%
+% The network will be designed by using the anatomical quantities of bodies
+% whose body fat percentage is already known to train it to produce
+% the target valuations.
+%
+%% Preparing the Data
+% Data for function fitting problems are set up for a neural network by
+% organizing the data into two matrices, the input matrix X and the target
+% matrix T.
+%
+% Each ith column of the input matrix will have thirteen elements
+% representing a body with known body fat percentage.
+% 
+% Each corresponding column of the target matrix will have one element,
+% representing the body fat percentage.
+%
+% Here such a dataset is loaded.
+
+[x,t] = bodyfat_dataset;
+
+%%
+% We can view the sizes of inputs X and targets T.
+%
+% Note that both X and T have 252 columns. These represent 252 physiques
+% (inputs) and associated body fat percentages (targets).
+%
+% The input matrix X has thirteen rows, for the thirteen attributes. The
+% target matrix T has only one row, as for each example we only have one
+% desired output, the body fat percentage.
+
+size(x)
+size(t)
+
+%% Fitting a Function with a Neural Network
+% The next step is to create a neural network that will learn to estimate
+% body fat percentages.
+%
+% Since the neural network starts with random initial weights, the results
+% of this example will differ slightly every time it is run. The random seed
+% is set to avoid this randomness. However this is not necessary for your
+% own applications.
+
+% setdemorandstream(491218382)
+
+%%
+% Two-layer (i.e. one-hidden-layer) feed forward neural networks can fit
+% any input-output relationship given enough neurons in the hidden layer.
+% Layers which are not output layers are called hidden layers.
+%
+% We will try a single hidden layer of 15 neurons for this example. In
+% general, more difficult problems require more neurons, and perhaps more
+% layers.  Simpler problems require fewer neurons.
+%
+% The input and output have sizes of 0 because the network has not yet
+% been configured to match our input and target data.  This will happen
+% when the network is trained.
+
+net = fitnet(15);
+view(net)
+
+%%
+% Now the network is ready to be trained. The samples are automatically
+% divided into training, validation and test sets. The training set is
+% used to teach the network. Training continues as long as the network
+% continues improving on the validation set. The test set provides a
+% completely independent measure of network accuracy.
+%
+% The NN Training Tool shows the network being trained and the algorithms
+% used to train it.  It also displays the training state during training
+% and the criteria which stopped training will be highlighted in green.
+%
+% The buttons at the bottom  open useful plots which can be opened during
+% and after training.  Links next to the algorithm names and plot buttons
+% open documentation on those subjects.
+
+[net,tr] = train(net,x,t);
+nntraintool
+
+%%
+% To see how the network's performance improved during training, either
+% click the "Performance" button in the training tool, or call PLOTPERFORM.
+%
+% Performance is measured in terms of mean squared error, and shown in
+% log scale.  It rapidly decreased as the network was trained.
+%
+% Performance is shown for each of the training, validation and test sets.
+% The version of the network that did best on the validation set is
+% was after training.
+
+plotperform(tr)
+
+%% Testing the Neural Network
+% The mean squared error of the trained neural network can now be measured
+% with respect to the testing samples. This will give us a sense of how
+% well the network will do when applied to data from the real world.
+
+testX = x(:,tr.testInd);
+testT = t(:,tr.testInd);
+
+testY = net(testX);
+
+perf = mse(net,testT,testY)
+
+%%
+% Another measure of how well the neural network has fit the data is the
+% regression plot.  Here the regression is plotted across all samples.
+%
+% The regression plot shows the actual network outputs plotted in terms of
+% the associated target values.  If the network has learned to fit the
+% data well, the linear fit to this output-target relationship should
+% closely intersect the bottom-left and top-right corners of the plot.
+%
+% If this is not the case then further training, or training a network
+% with more hidden neurons, would be advisable.
+
+y = net(x);
+figure(3)
+plotregression(t,y)
+%%
+% Another third measure of how well the neural network has fit data is the
+% error histogram.  This shows how the error sizes are distributed. 
+% Typically most errors are near zero, with very few errors far from that.
+
+e = t - y;
+figure(5)
+ploterrhist(e)
+
+%%
+% This example illustrated how to design a neural network that estimates
+% the body fat percentage from physical characteristics.
+%
+% Explore other examples and the documentation for more insight into neural
+% networks and their applications.
+
+%% Aufgaben
+% B. WIR 8.12.2017 
+%
+%% 1 Plotten Sie die Regressionsgeraden getrennt für
+% Trainings-, Test- und Validierungsdaten
+
+figure(10)
+plotregression(t(:,tr.trainInd),y(:,tr.trainInd),'TRAIN',t(:,tr.testInd),y(:,tr.testInd),'TEST',t(:,tr.valInd),y(:,tr.valInd),'VALID')
+
+%% 2 Trainieren Sie das Netz 10 mal und plotten Sie die zugehörigen 
+% Korrelationskoeffizienten und die mse-Werte 
+nntraintool('close'); 
+N=10;
+R_werte = zeros(3,N);
+mse_werte = zeros(3,N); % Train-,Test, Validierungsfehler
+
+for i=1:N;
+    net = fitnet(15); %neues Netz anlegen
+    net = fitnet(5);
+    [net,tr] = train(net,x,t);
+    
+    mse_werte(1,i) = mse(t(:,tr.trainInd),y(:,tr.trainInd));
+    mse_werte(2,i) = mse(t(:,tr.testInd),y(:,tr.testInd));
+    mse_werte(3,i) = mse(t(:,tr.valInd),y(:,tr.valInd));
+    
+    [r,m,b] = regression(t(:,tr.trainInd),y(:,tr.trainInd))
+    R_werte(1,i) = r;
+    [r,m,b] = regression(t(:,tr.testInd),y(:,tr.testInd))
+    R_werte(2,i) = r;
+    [r,m,b] = regression(t(:,tr.valInd),y(:,tr.valInd))
+    R_werte(3,i) = r;
+    
+    
+    figure(11);
+    plotperform(tr);
+end   
+    figure(12);
+    plot( mse_werte(1,:)); hold on;  plot( mse_werte(2,:));plot( mse_werte(3,:));
+    legend('Train', 'Test', 'Valid'); title('MSE'); hold  off; 
+    
+    figure(13);
+    plot( R_werte(1,:)); hold on;  plot( R_werte(2,:));plot( R_werte(3,:));
+    legend('Train', 'Test', 'Valid'); title('R'); hold off;
+    
+% FAZIT: Je nach Initialisierung ist das Netz unterschiedlich gut 
+
+%% 3 A Optinieren Sie die Netz Topologie (Anzahl Neuronen in der
+%  verdeckten Schicht anhand vom Korrelationskoeffizienten R 
+% x = x+ 0.02 *randn(size(x))* mean(mean(x)); %später Rauschen dazu
+
+%   3B Später: PCA Datenreduktion
+% [COEFF, SCORE, LATENT] = pca(x)
+% figure(20) 
+% subplot(1,3,1);imagesc(COEFF);
+% subplot(1,3,2);imagesc(SCORE);   
+% subplot(1,3,3);plot(LATENT);title('PCA-Eigenwerte')
+
+
+% [x_n_pca,settings_pca] = processpca(x,'maxfrac',0.001); % 
+% x = x_n_pca;
+% size(x)
+
+    ANZ_N = 15;
+    R_werte_mittel = ones(3,ANZ_N);
+        
+    for j = ANZ_N:-1:1
+        N = 10 % Experimente
+        for i=1:N;
+            net = fitnet(j); %neues Netz anlegen
+           [net,tr] = train(net,x,t);
+
+           
+            [r,m,b] = regression(t(:,tr.trainInd),y(:,tr.trainInd))
+            R_werte_mittel(1,j) = R_werte_mittel(1,j)+ r;
+            [r,m,b] = regression(t(:,tr.testInd),y(:,tr.testInd))
+            R_werte_mittel(2,j) = R_werte_mittel(2,j)+ r;
+            [r,m,b] = regression(t(:,tr.valInd),y(:,tr.valInd))
+            R_werte_mittel(3,j) = R_werte_mittel(3,j)+ r;
+
+        end   
+        R_werte_mittel(:,j)= R_werte_mittel(:,j)/N;
+    end    
+    figure(14);
+    plot( R_werte_mittel(1,:)); hold on;  plot( R_werte_mittel(2,:));plot( R_werte_mittel(3,:));
+    legend('Train', 'Test', 'Valid'); title('Optimierung Netzdimension'); hold off;
+    % FAZIT: 2 Neuronen genügen in der verdeckten Schicht R = ca 0.9 +-0.3
+    % PC mit 3 HAupkomponenten - > R > o.9+-0.3 bringt wenig ; die
+    % Verdeckte schicht kann das was PCA macht, mit PCA genügt 1 Neuron in VS 
+    
+    %% 3 B Nutzen Sie PCA zur Datenreduction
+    
+    
+##### SOURCE END #####
+--></body></html>
