@@ -1,7 +1,8 @@
 clc;
 clear;
 
-rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
+% rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
+rootPath = 'bestData/data';
 
 dataDir = dir(rootPath);%%List folder contents
 dataDirVect = [dataDir(:).isdir]; %# returns logical vector
@@ -55,7 +56,9 @@ function event = readEvents(path, fullpath)
          ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+500);
          akf_fenster=xcorr(ecg_fenster,ecg_fenster);
          %plot(akf_fenster);
-         new_akf = [new_akf;akf_fenster]; %#ok<AGROW>
+%          akf_fenster = akf_fenster(0.5*size(akf_fenster, 2)+39:end);
+
+         new_akf = [new_akf akf_fenster'];
  
        end
       %%new_akf ist cell array
@@ -63,8 +66,14 @@ function event = readEvents(path, fullpath)
       %cellplot(new_akf);
       %new_akf=cell2mat(new_akf);
       %plot(new_akf);
-      imshow(new_akf');
-    end
-    
-    
-   end 
+%       imshow(new_akf');
+        if strcmp(event.eventType,'APNAE')
+            plotAkf(new_akf);
+        end
+    end   
+end
+
+function plotAkf(akf)
+%     half = akf(0.5*size(akf,2):end,:);
+    imshow(akf);
+end
