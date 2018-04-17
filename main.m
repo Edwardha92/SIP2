@@ -8,6 +8,7 @@ patientFolders(ismember(patientFolders,{'.','..'})) = [];
 
 global event;
 event = struct('eventType', '', 'ecg', [], 'path', '');
+
 events = {};
 
 for patIdx = 1:length(patientFolders)
