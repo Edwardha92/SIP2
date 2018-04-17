@@ -17,6 +17,8 @@ for patIdx = 1:length(patientFolders)
     patFolderPath = {patientSubFolders(subidx).folder}';
     patFolderNames(ismember(patFolderNames,{'.','..'})) = [];
     
+	
+	
     for sub = 1:length(patFolderNames)
        eventFolderName = patFolderNames{sub};
        fullPath = strcat(patFolderPath{1},'\',eventFolderName,'\');
