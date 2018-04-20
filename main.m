@@ -4,6 +4,7 @@ clear;
 rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
 %rootPath = 'bestData/data';
 
+
 dataDir = dir(rootPath);%%List folder contents
 dataDirVect = [dataDir(:).isdir]; %# returns logical vector
 patientFolders = {dataDir(dataDirVect).name}';
@@ -54,15 +55,9 @@ function event = readEvents(path, fullpath)
 
          ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+500);
          akf_fenster=xcorr(ecg_fenster,ecg_fenster);
-%         plot(akf_fenster);
-%         akf_fenster = akf_fenster(0.5*size(akf_fenster, 2)+39:end);
-
          new_akf = [new_akf akf_fenster'];
  
        end
-
-%        plot(new_akf);
-%        imshow(new_akf);
         if strcmp(event.eventType,'APNAE')
 %            imshow(new_akf);
         end
@@ -73,6 +68,5 @@ function event = readEvents(path, fullpath)
         sliding_window=new_akf(540:643,i:i+120);
         imshow(sliding_window);
     end
+end   
     
-   
-end
