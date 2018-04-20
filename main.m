@@ -2,6 +2,7 @@ clc;
 clear;
 
 rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
+%rootPath = 'bestData/data';
 
 dataDir = dir(rootPath);%%List folder contents
 dataDirVect = [dataDir(:).isdir]; %# returns logical vector
@@ -22,7 +23,7 @@ for patIdx = 1:length(patientFolders)
     for sub = 1:length(patFolderNames)
        eventFolderName = patFolderNames{sub};
        fullPath = strcat(patFolderPath{1},'\',eventFolderName,'\');%Concatenate strings horizontally
-       events{end+1} = readEvents(eventFolderName, fullPath); %#ok<SAGROW>
+       events{end+1} = readEvents(eventFolderName, fullPath); 
     end
 end
 
@@ -45,7 +46,6 @@ function event = readEvents(path, fullpath)
     new_akf=[];
     for fileIdx = 1:length(dataFiles)
         singleData = load(strcat(dataFiles(fileIdx).folder, '\', dataFiles(fileIdx).name));
-        %plot(singleData.data.ecg);
         x=size(singleData.data.ecg);
         y=fix(x/500)*500;
         
@@ -54,17 +54,25 @@ function event = readEvents(path, fullpath)
 
          ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+500);
          akf_fenster=xcorr(ecg_fenster,ecg_fenster);
-         %plot(akf_fenster);
-         new_akf = [new_akf;akf_fenster]; %#ok<AGROW>
+%         plot(akf_fenster);
+%         akf_fenster = akf_fenster(0.5*size(akf_fenster, 2)+39:end);
+
+         new_akf = [new_akf akf_fenster'];
  
        end
-      %%new_akf ist cell array
-      %celldisp(new_akf);
-      %cellplot(new_akf);
-      %new_akf=cell2mat(new_akf);
-      %plot(new_akf);
-      imshow(new_akf');
+
+%        plot(new_akf);
+%        imshow(new_akf);
+        if strcmp(event.eventType,'APNAE')
+%            imshow(new_akf);
+        end
+    end   
+    size_akf=size(new_akf);
+    ii=fix(size_akf(2)/121)*121;
+    for i =1:121:ii
+        sliding_window=new_akf(540:643,i:i+120);
+        imshow(sliding_window);
     end
     
-    
-   end 
+   
+end
