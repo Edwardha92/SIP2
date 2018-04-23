@@ -56,15 +56,13 @@ function event = readEvents(path, fullpath)
          
        end
 %        plot(singleData.data.ecg);
-        plot(new_akf);
-%        imshow(new_akf);
-%        imagesc(new_akf);
+%        plot(new_akf);
         if strcmp(event.eventType,'APNAE')
 %            imshow(new_akf);
         end
     end
-    plot(new_akf);
-    imshow(new_akf);
+%    plot(new_akf);
+%    imshow(new_akf);
     size_akf=size(new_akf);
     ii=fix(size_akf(2)/121)*121;
     for i =1:121:ii
