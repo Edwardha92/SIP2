@@ -47,10 +47,10 @@ function event = readEvents(path, fullpath)
     for fileIdx = 1:length(dataFiles)
         singleData = load(strcat(dataFiles(fileIdx).folder, '\', dataFiles(fileIdx).name));
         x=size(singleData.data.ecg);
-        y=fix(x/140)*140;
+        y=fix(x/141)*141;
         
-       for ecg_index=1:140:y(2)
-         ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+140);
+       for ecg_index=1:141:y(2)
+         ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+141);
          akf_fenster=xcorr(ecg_fenster,ecg_fenster);
          new_akf = [new_akf akf_fenster'];
          
@@ -66,7 +66,7 @@ function event = readEvents(path, fullpath)
     size_akf=size(new_akf);
     ii=fix(size_akf(2)/121)*121;
     for i =1:121:ii
-        sliding_window=new_akf(140:281,i:i+120);
+        sliding_window=new_akf(179:282,i:i+120);
         imshow(sliding_window);
         imagesc(sliding_window);
     end
