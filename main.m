@@ -1,8 +1,8 @@
 clc;
 clear;
 
-rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
-%rootPath = 'bestData/data';
+% rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
+rootPath = 'data';
 
 
 dataDir = dir(rootPath);%%List folder contents
