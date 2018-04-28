@@ -6,7 +6,7 @@ root_path = 'data';
 
 [no_event, ap_event] = get_ecg(root_path);
 
-akf = []
+akf = [];
 
 for event_idx = 1:length(ap_event(:,1))
 
