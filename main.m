@@ -53,23 +53,24 @@ function event = readEvents(path, fullpath)
          ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+512);
          akf_fenster=xcorr(ecg_fenster,ecg_fenster);
          new_akf = [new_akf akf_fenster'];
-%         plot(new_akf);
          
        end
-%        plot(singleData.data.ecg);
 %        plot(new_akf);
+%        imshow(new_akf);
         if strcmp(event.eventType,'APNAE')
 %            imshow(new_akf);
         end
     end
-%    plot(new_akf);
+    plot(new_akf);
 %    imshow(new_akf);
     size_akf=size(new_akf);
-    ii=fix(size_akf(2)/121)*121;
+    ii=fix(size_akf(1)/121)*121;
     for i =1:121:ii
-        sliding_window=new_akf(ii/2:ii/2+148,i:i+120);
-        imshow(sliding_window);
-        imagesc(sliding_window);
+        sliding_window=new_akf(ii/2+39:ii/2+142,i:i+120);
+        %imshow(sliding_window);
+        %imagesc(sliding_window);
+        sliding_window=upsample(sliding_window,13);
+        plot (sliding_window);
     end
 end   
     

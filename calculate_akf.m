@@ -2,7 +2,7 @@ function akf_list = calculate_akf(ecg_chunk)
     show_images = true;
     akf_list = [];
 
-    akf_count = fix(length(ecg_chunk)/121) * 121;
+    akf_count = fix(length(ecg_chunk)/121) * 121; 
     step_size = 50;
     akf_length = 512;
     
@@ -11,6 +11,9 @@ function akf_list = calculate_akf(ecg_chunk)
         akf = xcorr(ecg, ecg);
         akf_list = [akf_list akf'];
     end
+
+
+    
     
 %     imshow(akf_list);
 %     imagesc(akf_list);

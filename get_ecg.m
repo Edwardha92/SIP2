@@ -24,13 +24,13 @@ function [no_events_ecg, ap_events_ecg] = get_ecg(root_path)
            for file_idx = 1:length(event_files)
                file = load(strcat(event_files(file_idx).folder,'\', event_files(file_idx).name));
                data = file.data.ecg;
-               tmp_events = [tmp_events; data(1:6513)];
+               tmp_events = [tmp_events; data(1:6513)]; %#ok<AGROW>
            end
            
            if strfind(events_full_path{event_type_idx}, 'NO_EVENT')
-               no_events_ecg = [no_events_ecg; tmp_events];
+               no_events_ecg = [no_events_ecg; tmp_events]; %#ok<AGROW>
            else
-               ap_events_ecg = [ap_events_ecg; tmp_events];
+               ap_events_ecg = [ap_events_ecg; tmp_events]; %#ok<AGROW>
            end
        end
     end
