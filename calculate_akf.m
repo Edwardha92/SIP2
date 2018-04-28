@@ -32,5 +32,5 @@ function akf_list = calculate_akf(ecg_chunk)
 %         imshow(sliding_window);
 %         imagesc(sliding_window);
 %     end
-    1+2;
+   
 end

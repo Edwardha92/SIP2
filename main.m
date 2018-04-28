@@ -1,11 +1,11 @@
 clc;
 clear;
 
-% rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
-rootPath = 'data';
+root_path = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
+%rootPath = 'data';
 
 
-dataDir = dir(rootPath);%%List folder contents
+dataDir = dir(root_path);%%List folder contents
 dataDirVect = [dataDir(:).isdir]; %# returns logical vector
 patientFolders = {dataDir(dataDirVect).name}';
 patientFolders(ismember(patientFolders,{'.','..'})) = [];%%Delet the empty felds
@@ -15,7 +15,7 @@ event = struct('eventType', '', 'ecg', [], 'path', '');
 events = {};
 
 for patIdx = 1:length(patientFolders)
-    patientSubFolders = dir(strcat(rootPath, '\' ,patientFolders{patIdx}));%to see the contents of the PatientFolder
+    patientSubFolders = dir(strcat(root_path, '\' ,patientFolders{patIdx}));%to see the contents of the PatientFolder
     subidx = [patientSubFolders(:).isdir];% returns logical vector
     patFolderNames = {patientSubFolders(subidx).name}';
     patFolderPath = {patientSubFolders(subidx).folder}';
@@ -47,12 +47,13 @@ function event = readEvents(path, fullpath)
     for fileIdx = 1:length(dataFiles)
         singleData = load(strcat(dataFiles(fileIdx).folder, '\', dataFiles(fileIdx).name));
         x=size(singleData.data.ecg);
-        y=fix(x/141)*141;
+        y=fix(x/121)*121;
         
-       for ecg_index=1:141:y(2)
-         ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+141);
+       for ecg_index=1:50:y(2)-512
+         ecg_fenster=singleData.data.ecg(ecg_index:ecg_index+512);
          akf_fenster=xcorr(ecg_fenster,ecg_fenster);
          new_akf = [new_akf akf_fenster'];
+%         plot(new_akf);
          
        end
 %        plot(singleData.data.ecg);
@@ -66,7 +67,7 @@ function event = readEvents(path, fullpath)
     size_akf=size(new_akf);
     ii=fix(size_akf(2)/121)*121;
     for i =1:121:ii
-        sliding_window=new_akf(179:282,i:i+120);
+        sliding_window=new_akf(ii/2:ii/2+148,i:i+120);
         imshow(sliding_window);
         imagesc(sliding_window);
     end

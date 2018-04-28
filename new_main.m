@@ -1,7 +1,7 @@
 clc;
 clear;
 figure(1);
-% rootPath = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
+%root_path = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
 root_path = 'data';
 
 [no_event, ap_event] = get_ecg(root_path);
