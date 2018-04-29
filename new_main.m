@@ -8,7 +8,7 @@ root_path = 'data';
 
 akf = [];
 
-for event_idx = 1: length(ap_event(:,1))
+for event_idx = 1:10% length(ap_event(:,1))
 
 
     ecg = ap_event(event_idx,:);
@@ -18,7 +18,7 @@ for event_idx = 1: length(ap_event(:,1))
 %     subplot(2,1,1); plot(ecg); hold on; 
 %     subplot(2,1,2); plot(akf); hold on;
 end
-%imshow(akf);
+imshow(akf);
 
 akf_fenster=fenster(akf);
 

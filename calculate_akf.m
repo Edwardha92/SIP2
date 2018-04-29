@@ -10,6 +10,7 @@ function akf_list = calculate_akf(ecg_chunk)
         ecg = ecg_chunk(i:i+akf_length);
         akf = xcorr(ecg, ecg);
         akf_list = [akf_list akf'];
+        imagesc(akf_list);
     end
 
 
