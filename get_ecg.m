@@ -1,4 +1,5 @@
 function [no_events_ecg, ap_events_ecg] = get_ecg(root_path)
+
     data_path = dir(root_path);
     data_content = [data_path(:).isdir];
     folders = {data_path(data_content).name}';
@@ -8,7 +9,7 @@ function [no_events_ecg, ap_events_ecg] = get_ecg(root_path)
     ap_events_ecg = [];
     
     
-    for folder_idx = 1: 2%length(folders)
+    for folder_idx = 1: length(folders)
        tmp_path = strcat(root_path, '\', folders{folder_idx});
        events_path = dir(tmp_path);
        event_content = [events_path(:).isdir];
@@ -23,13 +24,13 @@ function [no_events_ecg, ap_events_ecg] = get_ecg(root_path)
            for file_idx = 1:length(event_files)
                file = load(strcat(event_files(file_idx).folder,'\', event_files(file_idx).name));
                data = file.data.ecg;
-               tmp_events = [tmp_events; data(1:6513)];
+               tmp_events = [tmp_events; data(1:6513)]; %#ok<AGROW>
            end
            
            if strfind(events_full_path{event_type_idx}, 'NO_EVENT')
-               no_events_ecg = [no_events_ecg; tmp_events];
+               no_events_ecg = [no_events_ecg; tmp_events]; %#ok<AGROW>
            else
-               ap_events_ecg = [ap_events_ecg; tmp_events];
+               ap_events_ecg = [ap_events_ecg; tmp_events]; %#ok<AGROW>
            end
        end
     end
