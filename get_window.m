@@ -17,9 +17,10 @@ function process(akf_window)
     max_values = [];
     max_idx = [];
     for i = 1:121
-        mx = max(akf_window(:,i));
-        max_idx = [max_idx find(akf_window(:,i) == mx)];
+        [mx, mxidx] = max(akf_window(:,i));
+%          = [max_idx find(akf_window(:,i) == mx)];
         max_values = [max_values mx];
+        max_idx = [max_idx mxidx];
     end
         
     mmax = max(max_values);
