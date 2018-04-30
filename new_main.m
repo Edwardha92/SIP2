@@ -12,8 +12,11 @@ akf = [];
 for event_idx = 1:10% length(ap_event(:,1))
 
 
-    ecg = ap_event(event_idx,:);
-    akf = [akf calculate_akf(ecg)];
+    ap_ecg = ap_event(event_idx,:);
+    no_ecg = no_event(event_idx,:);
+    jnk = calculate_akf(ap_ecg);
+    
+    akf = [akf jnk];
 
 
 %     subplot(2,1,1); plot(ecg); hold on; 

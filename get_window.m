@@ -1,7 +1,7 @@
 function akf_window = get_window(akf_list)
     size_akf=size(akf_list);
     akf_window = [];
-    
+        
     for i =1:121:size_akf(2) - 121
         tmp = akf_list(size_akf(1)/2 + 39:size_akf(1) / 2 + 142, i:i + 120);
         akf_window = [akf_window tmp];
@@ -35,6 +35,11 @@ function process(akf_window)
     new_max = filter(b, [1], max_values);
     subplot(2,1,1);plot(max_values);
     subplot(2,1,2);plot(new_max);
+    
+    %%% Training here %%%
+    ann(max_idx, max_values);
+    
+    
     
     sampled_data = [];
     len = fix(length(new_max)/13);
