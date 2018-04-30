@@ -1,19 +1,21 @@
 function akf_window = get_window(akf_list)
     size_akf=size(akf_list);
     akf_window = [];
-        
+    
+    filter_coeff = get_filter_coeff();
+    
     for i =1:121:size_akf(2) - 121
         tmp = akf_list(size_akf(1)/2 + 39:size_akf(1) / 2 + 142, i:i + 120);
         akf_window = [akf_window tmp];
         %imshow(akf_fenster);hold on;
         imagesc(akf_window);
         
-        process(tmp);
+        process(tmp, filter_coeff);
         
     end
 end 
 
-function process(akf_window)
+function process(akf_window, filter_coeff)
     max_values = [];
     max_idx = [];
     for i = 1:121
@@ -29,10 +31,8 @@ function process(akf_window)
         max_values(i) = max_values(i) / mmax;
         nm(max_idx(i), i) = 10;
     end
-    
-    b = get_filter_coeff();
-    
-    new_max = filter(b, [1], max_values);
+        
+    new_max = filter(filter_coeff, [1], max_values);
     subplot(2,1,1);plot(max_values);
     subplot(2,1,2);plot(new_max);
     
@@ -49,7 +49,7 @@ function process(akf_window)
 end
 
 function coeff = get_filter_coeff()
-    fs    = 20;     % Sampling Frequency
+    Fs    = 20;     % Sampling Frequency
 
     N     = 10;     % Order
     Fpass = 5;      % Passband Frequency
@@ -59,5 +59,5 @@ function coeff = get_filter_coeff()
     dens  = 20;     % Density Factor
 
     coeff  = firpm(N, [0 Fpass Fstop Fs/2]/(Fs/2), [1 1 0 0], [Wpass Wstop], {dens});
-    Hd = dfilt.dffir(b);
+    Hd = dfilt.dffir(coeff);
 end
