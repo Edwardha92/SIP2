@@ -1,3 +1,5 @@
-function ann(indices, max_values)
+function ann(data, target)
+
+    nnstart;
 
 end
