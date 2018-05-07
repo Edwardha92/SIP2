@@ -1,6 +1,6 @@
 clc;
 clear;
-figure(1);
+% figure(1);
 %root_path = 'C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events\data';
 % root_path = 'data';
 root_path = 'C:\Users\bloodsurfer\Documents\1dev\SIP2\bestData\data';
@@ -9,6 +9,11 @@ root_path = 'C:\Users\bloodsurfer\Documents\1dev\SIP2\bestData\data';
 akf = [];
 ap = [];
 no = [];
+
+len = min(length(ap_event(:,1)), length(no_event(:,1)));
+ap_event = ap_event(1:len,:);
+no_event = no_event(1:len,:);
+
 
 for event_idx = 1:length(ap_event(:,1))
     ap_ecg = ap_event(event_idx,:);    
@@ -21,6 +26,9 @@ for event_idx = 1:length(no_event(:,1))
     no_akf = calculate_akf(no_ecg);
     no = [no no_akf];
 end
+
+figure(1);imagesc(ap);
+figure(2);imagesc(no);
 
 % imshow(akf);
 
@@ -41,5 +49,4 @@ training_data = sorted_data(:,shuffle_idx);
 target = sorted_target(:, shuffle_idx);
 ann(training_data, target);
 
-%process_akf(akf_window);
 
