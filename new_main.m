@@ -6,6 +6,7 @@ ecg_step_size = 50;
 ecg_length = 511;
 
 proc = ECGProcessing;
+clas = NeuralNetowrk;
 proc.show_images = 1;
 
 input_vector = [];
@@ -18,6 +19,9 @@ for j = 1:size(ap_event,1)
     for i = 1 : ecg_step_size : size(single_data,2) - ecg_length % mod(size(single_data,2), ecg_step_size)
         data_chunk = single_data(i: i + ecg_length);
         dat = proc.generate_input_vector(data_chunk);
+        if size(dat) ~= 0
+           clas.classify(dat) 
+        end
         input_vector = [input_vector dat];
     %     sprintf('Iteration: %d of 150', i)
     %     imagesc(proc.histogram);
