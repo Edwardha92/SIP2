@@ -1,6 +1,6 @@
 clear all;
 
-root_path = 'D:/1dev/SIP2/dat1';
+root_path = 'C:\Users\bloodsurfer\Documents\1dev\SIP2\bestData\data';
 [no_event, ap_event] = get_ecg(root_path);
 ecg_step_size = 50;
 ecg_length = 511;
@@ -9,6 +9,8 @@ proc = ECGProcessing;
 proc.show_images = 1;
 
 input_vector = [];
+
+min_length = min(size(no_event), size(ap_event));
 
 for j = 1:size(ap_event,1)
     single_data = ap_event(j,:);
