@@ -1,6 +1,7 @@
 clear all;
 
-root_path = 'C:\Users\bloodsurfer\Documents\1dev\SIP2\bestData\data';
+root_path ='C:\Users\Edwar\Desktop\3.Semester\SIP2\Datenbank\best_events';
+%root_path = 'C:\Users\bloodsurfer\Documents\1dev\SIP2\bestData\data';
 [no_event, ap_event] = get_ecg(root_path);
 ecg_step_size = 50;
 ecg_length = 511;
