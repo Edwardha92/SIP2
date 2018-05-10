@@ -9,7 +9,7 @@ function [no_events_ecg, ap_events_ecg] = get_ecg(root_path)
     ap_events_ecg = [];
     
     
-    for folder_idx = 1:1%length(folders)
+    for folder_idx = 1:length(folders)
        tmp_path = strcat(root_path, '\', folders{folder_idx});
        events_path = dir(tmp_path);
        event_content = [events_path(:).isdir];
