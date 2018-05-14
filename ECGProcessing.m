@@ -47,6 +47,9 @@ classdef ECGProcessing < handle
     
     properties (SetAccess = public)
        show_images = true;
+       data_type = 0; % 0 = no apnoe; 1 = apnoe
+       n_ap = 0;
+       n_no = 0;
     end
     
     
@@ -91,10 +94,10 @@ classdef ECGProcessing < handle
             
             [values, indeces] = obj.process_histogram(obj.histogram);
             
-            dat = [downsample(values, obj.downsample_rate)];
-            idx = [downsample(indeces, obj.downsample_rate)];
+%             dat = [downsample(values, obj.downsample_rate)];
+%             idx = [downsample(indeces, obj.downsample_rate)];
             
-            input_vector = [dat idx]';
+            input_vector = [values indeces]';
             warning ('on','all');
         end
         
@@ -123,20 +126,31 @@ classdef ECGProcessing < handle
             filtered_max = val(:,filtered_index);
 %             subplot(2,1,1); plot(filtered_index); subplot(2,1,2); plot(filtered_max); 
             
-
-            values = val;
-            indeces = idx;
+% 
+%             values = val;
+%             indeces = idx;
+%             
+%             val = filtered_max;
+%             idx = filtered_index;
             
-            val = filtered_max;
-            idx = filtered_index;
+            values = [downsample(filtered_max, obj.downsample_rate)];
+            indeces = double([downsample(filtered_index, obj.downsample_rate)]);
             
             if obj.show_images == true
-                figure(obj.figure_handle); hold on;
-                subplot(2,2,3); imagesc(histogram); title('Histogram'); %ylim([-hist_half_idx hist_half_idx]);
-                subplot(2,2,4); imagesc(tmp_hist); title('Histogram window'); hold on; scatter(1:length(idx),idx, 'r'); 
+                
+                hit_rate = 0;
+                if obj.data_type == 0
+                    hit_rate = obj.n_no / (obj.n_ap + obj.n_no)
+                else
+                    hit_rate = obj.n_ap / (obj.n_ap + obj.n_no)
+                end
+                figHdl = figure(obj.figure_handle); hold on;
+                set(figHdl, 'Name', sprintf('Hitrate: %f', hit_rate));
+                subplot(2,2,3); imagesc(histogram); title('AKF list'); %ylim([-hist_half_idx hist_half_idx]);
+                subplot(2,2,4); imagesc(tmp_hist); title('AKF window'); hold on; scatter(1:length(idx),idx, 'gx'); scatter(1:obj.downsample_rate:size(filtered_index,2), indeces, 'r','filled');
 
-                subplot(2,2,2); plot(1:length(idx), idx); title('Indeces'); set(gca, 'YDir', 'Reverse');
-                hdl_values = subplot(2,2,1); cla(hdl_values); plot(1:length(val), val); title('Values'); 
+                subplot(2,2,2); plot(1:length(idx), idx); title('Indeces'); set(gca, 'YDir', 'Reverse'); 
+                hdl_values = subplot(2,2,1); cla(hdl_values); plot(1:length(val), val); title('Values');  
                 set(gca, 'YDir', 'Reverse');
                 drawnow;
             end

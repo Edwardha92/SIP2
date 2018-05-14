@@ -7,16 +7,18 @@ classdef NeuralNetwork < handle
         % Layer 2
         b2 = -0.17793463732987627179;
         LW2_1 = [-0.9285480502507598155 -0.40828307352693571364 -0.92967267299493938637 0.024198219173993153197 0.51855934098916256492 0.92676019851840318875 0.44385678181525073382 -0.74499171210486914152 -0.14334270431094595089 -0.076395446686773837985 -0.29887480294544982451 -1.1571727778354681249 0.60711929840820888504 -0.69396478399695316064 -0.36568581981331094166 0.38001543237491497429 -0.65922545850795966071 -0.94230547935627129164 -0.57880654109445406341 -1.0175261534854689316 -0.17248386715425326199 0.92987627814430484641 0.2844086328093560212 0.78783449119141091277 0.81628368487160085643 -0.33172339126907735007 0.2076503075990705216 -1.4896724239104197629 0.36330374500470041799 -0.22014766987213424398 -0.34878612284424997947 0.091280989640662626994];
-
+        
+        n = load('bestNet100');
     end
     
     methods
         function obj = NeuralNetwork()
+%             obj.n = load('bestNet100');
         
         end
         function [classification] = classify(obj, input)
-            n = load('bestNet100');
-            classification = n.bestNet100(input);
+%             n = load('bestNet100');
+            classification = obj.n.bestNet100(input);
             return;
             
             %MYNEURALNETWORKFUNCTION neural network simulation function.
@@ -39,7 +41,7 @@ classdef NeuralNetwork < handle
 
             a1 = obj.tansig_apply(repmat(obj.b1,1,Q) + obj.IW1_1*xp1);
 
-            classification = obj.logsig_apply(repmat(obj.b2,1,Q) + obj.LW2_1*a1);
+            classification = obj.tansig_apply(repmat(obj.b2,1,Q) + obj.LW2_1*a1);
 
         end
         
