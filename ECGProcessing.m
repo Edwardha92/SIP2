@@ -68,13 +68,16 @@ classdef ECGProcessing < handle
         
         
         function input_vector = generate_input_vector(obj, ecg_chunk)
+            warning ('off','all');
             input_vector = [];
             if size(ecg_chunk,2) ~= obj.akf_length
                 info('expected ecg chunk length is 512. The provided data has %d values instead.', size(ecg_chunk,2));
                 return;
             end
             
-            ecg = ecg_chunk .* hamming(size(ecg_chunk,2), 'symmetric')';
+            
+            
+            ecg = ecg_chunk .* blackman(size(ecg_chunk,2), 'symmetric')';
 %             ecg = ecg_chunk;
             akf = xcorr(ecg, ecg);
             
@@ -92,6 +95,7 @@ classdef ECGProcessing < handle
             idx = [downsample(indeces, obj.downsample_rate)];
             
             input_vector = [dat idx]';
+            warning ('on','all');
         end
         
         function clear_all(obj)
