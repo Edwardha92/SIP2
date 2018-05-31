@@ -1,4 +1,5 @@
-root_path = 'D:\1dev\SIP2\bestData';
+% root_path = 'D:\1dev\SIP2\bestData';
+root_path = 'D:\1dev\SIP2\data';
 
 ecg_step_size = 50;
 ecg_chunk_length = 511;

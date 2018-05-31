@@ -5,32 +5,32 @@ root_path = 'D:\1dev\SIP2\final\data';
 if get_flag
    sprintf('ECG loading successfull') 
 end
+% 
+% [input_flag, input_vector] = test_input_vector();
+% 
+% if input_flag
+%    sprintf('Generating input vector successfull') 
+% end
 
-[input_flag, input_vector] = test_input_vector();
-
-if input_flag
-   sprintf('Generating input vector successfull') 
-end
-
-
-function [flag, input_vector] = test_input_vector()
-    akf_list = zeros(1023,121);
-    akf_length = 511;
-    akf_step = 50;
-
-    akf_list(520,:) = 1;
-    
-    apnoe = zeros(1,512);
-    
-    apnoe(1,512 - 20) = 1;
-    
-    ap_wind = apnoe .* blackman(size(apnoe,2), 'symmetric')';
-    cor = xcorr(ap_wind, ap_wind);
-    
-    for i = 1:akf_step:size(apnoe,2)-akf_length
-        [input_vector, akf_list] = generate_input_vector(apnoe(i:i+akf_length), akf_list);
-    end
-end
+% 
+% function [flag, input_vector] = test_input_vector()
+%     akf_list = zeros(1023,121);
+%     akf_length = 511;
+%     akf_step = 50;
+% 
+%     akf_list(520,:) = 1;
+%     
+%     apnoe = zeros(1,512);
+%     
+%     apnoe(1,512 - 20) = 1;
+%     
+%     ap_wind = apnoe .* blackman(size(apnoe,2), 'symmetric')';
+%     cor = xcorr(ap_wind, ap_wind);
+%     
+%     for i = 1:akf_step:size(apnoe,2)-akf_length
+%         [input_vector, akf_list] = generate_input_vector(apnoe(i:i+akf_length), akf_list);
+%     end
+% end
 
 function [flag, apnoe, noevent] = test_ecg(root_path)
     no_path = '\dat\NO_EVENT\';
@@ -53,7 +53,7 @@ function [flag, apnoe, noevent] = test_ecg(root_path)
     end
 
     if noevent == data.ecg
-        sprintf('Apnoe data is correctly loaded');
+        sprintf('NoEvent data is correctly loaded');
         no_flag = true;
     end
     

@@ -13,8 +13,7 @@ function [input_vector, akf_list] = generate_input_vector(ecg_chunk, akf_list)
         return;
     end
 
-    ecg = ecg_chunk .* blackman(size(ecg_chunk,2), 'symmetric')';
-    akf = xcorr(ecg, ecg);
+    akf = calculate_akf(ecg_chunk);
 
     if size(akf_list,2) < list_length
        akf_list = [akf_list akf'];
@@ -36,11 +35,12 @@ function [values, indeces] = process_list(akf_list)
 
 %     filter_coeff = get_filter_coeff();
     
+    show_images = true; 
 %     show_images = false;
     downsample_rate = 10;
+        
+    cropped_list = crop_list(akf_list);
     
-    half_idx = size(akf_list,1) / 2;
-    cropped_list = akf_list(half_idx + 39:half_idx + 142,:);
     [max_val, max_idx] = max(cropped_list);
         
 %     filtered_index = int64(ceil(filtfilt(filter_coeff, [1], idx)));
@@ -58,23 +58,23 @@ function [values, indeces] = process_list(akf_list)
 %     values = [values filtered_max_val(end)];
 %     indeces = [indeces filtered_idx(end)];
     
-%     if show_images == true
-% %         hit_rate = 0;
-% %         if obj.data_type == 0
-% %             hit_rate = obj.n_no / (obj.n_ap + obj.n_no)
-% %         else
-% %             hit_rate = obj.n_ap / (obj.n_ap + obj.n_no)
-% %         end
-% %         figHdl = figure(obj.figure_handle); hold on;
-% %         set(figHdl, 'Name', sprintf('Hitrate: %f', hit_rate));
-%         subplot(2,2,3); imagesc(akf_list); title('AKF list'); %ylim([-hist_half_idx hist_half_idx]);
-%         subplot(2,2,4); imagesc(cropped_list); title('AKF window'); hold on; scatter(1:length(max_idx),max_idx, 'gx'); scatter(1:downsample_rate:size(filtered_idx,2), indeces, 'r','filled');
-% 
-%         subplot(2,2,2); plot(1:length(max_idx), max_idx); title('Indeces'); set(gca, 'YDir', 'Reverse'); 
-%         hdl_values = subplot(2,2,1); cla(hdl_values); plot(1:length(max_val), max_val); title('Values');  
-%         set(gca, 'YDir', 'Reverse');
-%         drawnow;
-%     end
+    if show_images == true
+%         hit_rate = 0;
+%         if obj.data_type == 0
+%             hit_rate = obj.n_no / (obj.n_ap + obj.n_no)
+%         else
+%             hit_rate = obj.n_ap / (obj.n_ap + obj.n_no)
+%         end
+%         figHdl = figure(obj.figure_handle); hold on;
+%         set(figHdl, 'Name', sprintf('Hitrate: %f', hit_rate));
+        subplot(2,2,3); imagesc(akf_list); title('AKF list'); %ylim([-hist_half_idx hist_half_idx]);
+        subplot(2,2,4); imagesc(cropped_list); title('AKF window'); hold on; scatter(1:length(max_idx),max_idx, 'gx'); scatter(1:downsample_rate:size(filtered_idx,2), indeces, 'r','filled');
+
+        subplot(2,2,2); plot(1:length(max_idx), max_idx); title('Indeces'); set(gca, 'YDir', 'Reverse'); 
+        hdl_values = subplot(2,2,1); cla(hdl_values); plot(1:length(max_val), max_val); title('Values');  
+        set(gca, 'YDir', 'Reverse');
+        drawnow;
+    end
 end
         
                 
