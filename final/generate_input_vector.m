@@ -13,7 +13,7 @@ function [input_vector, akf_list] = generate_input_vector(ecg_chunk, akf_list)
     
     input_vector = [];
     if size(ecg_chunk,2) ~= akf_length
-        info('expected ecg chunk length is 512. The provided data has %d values instead.', size(ecg_chunk,2));
+        info(sprintf('expected ecg chunk length is 512. The provided data has %d values instead.', size(ecg_chunk,2)));
         return;
     end
 
