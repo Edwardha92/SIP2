@@ -1,8 +1,12 @@
 function [input_vector, akf_list] = generate_input_vector(ecg_chunk, akf_list)
-%GENERATE_INPUT_VECTOR  This 
+% GENERATE_INPUT_VECTOR  This function will generate a feature vector based
+% on a ecg vector of 512 elements and the akf_list.
 %
-%
-%
+% This method requires a ecg vector of 512 elements and a (empty) akf_list.
+% The ecg vector will be processed and appended to the akf_list. This list
+% is a ringbuffer containing maximum 121 elements. When the list is full
+% the max values and the corresponding indeces will be extracted from the
+% second maximum of the lower half of the akf_list. 
 %
     list_length = 121;
     akf_length = 512; 

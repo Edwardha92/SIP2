@@ -29,7 +29,7 @@ for j = 1:size(ap_event,1)
         data_chunk = single_data(i: i + ecg_length);
         dat = proc.generate_input_vector(data_chunk);
         if size(dat) ~= 0
-           if clas.classify(dat) < nn_threshold 
+           if clas.classify(dat) < nn_threshold
               proc.n_no = proc.n_no + 1;
            else
               proc.n_ap = proc.n_ap + 1;
