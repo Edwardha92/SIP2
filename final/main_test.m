@@ -53,6 +53,14 @@ function [flag, apnoe, noevent] = test_ecg()
     no_path = '\dat\NO_EVENT\';
     ap_path = '\dat\Obstructive Apnea\';
 
+    if ~exist(strcat(root_path, no_path),'dir')
+       mkdir(strcat(root_path, no_path)); 
+    end
+    
+    if ~exist(strcat(root_path, ap_path),'dir')
+       mkdir(strcat(root_path, ap_path)); 
+    end
+    
     data = {};
     data.ecg = generate_ecg();
 
