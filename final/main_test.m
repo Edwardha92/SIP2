@@ -1,6 +1,6 @@
 sprintf('Start testing...');
 flag = test_ecg();
-flag = flag & test_calculate_akf();
+flag = flag & test_calculate_akf()
 flag = flag & test_crop_list();
 
 if flag
