@@ -5,6 +5,10 @@ function [no_vec, ap_vec] = assemble_training_data(root_path)
 %Apnoe' subfolder with the ecg data in a *.mat file.
 %The vectors can be mixed to create a suitable training matrix for a 
 %artificial neural network.
+%
+%
+% Review: Stanislav 10.06.2018
+
 
     ecg_step_size = 50;
     ecg_chunk_length = 511;
@@ -19,7 +23,7 @@ function [no_vec, ap_vec] = assemble_training_data(root_path)
 
     akf_list = [];
 
-    for j = 1:20%size(ap,1)
+    for j = 1:size(ap,1)
         full_ecg = ap(j,:);
          for i = 1 : ecg_step_size : size(full_ecg,2) - ecg_chunk_length % mod(size(single_data,2), ecg_step_size)
             ecg_dat = full_ecg(i: i + ecg_chunk_length);
@@ -32,7 +36,7 @@ function [no_vec, ap_vec] = assemble_training_data(root_path)
          end
     end
 
-    for j = 1:20%size(no,1)
+    for j = 1:size(no,1)
         full_ecg = no(j,:);
          for i = 1 : ecg_step_size : size(full_ecg,2) - ecg_chunk_length % mod(size(single_data,2), ecg_step_size)
             ecg_dat = full_ecg(i: i + ecg_chunk_length);

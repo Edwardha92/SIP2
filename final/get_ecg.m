@@ -16,7 +16,8 @@ function [no_events_ecg, ap_events_ecg] = get_ecg(root_path)
 %           NUM refers to the number of different events.
 %
 %
-%
+% Review: Stas 28.05.2018
+
     data_path = dir(root_path);
     data_content = [data_path(:).isdir];
     folders = {data_path(data_content).name}';

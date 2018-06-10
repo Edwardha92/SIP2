@@ -1,3 +1,7 @@
+%
+%
+% Review: Stas 10.06.2018
+
 ecg = ones(512,1)';
 akf_list = ones(1023,121);
 [input , akf_list] = generate_input_vector(ecg, akf_list);

@@ -1,3 +1,6 @@
+%
+% Review: Stas 10.06.2018
+
 sprintf('Start testing...');
 flag = test_ecg();
 flag = flag & test_calculate_akf()
