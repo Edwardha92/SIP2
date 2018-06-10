@@ -9,6 +9,6 @@ function [cropped_list] = crop_list(akf_list)
 % Review: Stanislav 10.06.2018
 
     half_idx = floor(size(akf_list,1) / 2) + 39;
-    cropped_list = akf_list(half_idx:half_idx + 104,:);
+    cropped_list = akf_list(half_idx:half_idx + 103,:);
 end
 
