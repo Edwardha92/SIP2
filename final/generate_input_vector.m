@@ -1,3 +1,4 @@
+%Review: Edward 10.06.2018
 function [input_vector, akf_list] = generate_input_vector(ecg_chunk, akf_list)
 % GENERATE_INPUT_VECTOR  This function will generate a feature vector based
 % on a ecg vector of 512 elements and the akf_list.
@@ -11,10 +12,10 @@ function [input_vector, akf_list] = generate_input_vector(ecg_chunk, akf_list)
 % Review: Stanislav 10.06.2018
 
     list_length = 121;
-    akf_length = 512; 
+    ecg_length = 512; 
     
     input_vector = [];
-    if size(ecg_chunk,2) ~= akf_length
+    if size(ecg_chunk,2) ~= ecg_length
         return;
     end
 
@@ -42,10 +43,10 @@ function [values, indeces] = process_list(akf_list)
     cropped_list = crop_list(akf_list);
     
     [max_val, max_idx] = max(cropped_list);
-    filtered_idx = max_idx;
+    filtered_max_idx = max_idx;
     filtered_max_val = max_val;
 
 
     values = downsample(filtered_max_val, downsample_rate);
-    indeces = double(downsample(filtered_idx, downsample_rate));
+    indeces = double(downsample(filtered_max_idx, downsample_rate));
 end

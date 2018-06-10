@@ -1,3 +1,4 @@
+%Review: Edward 10.06.2018
 function [cropped_list] = crop_list(akf_list)
 %CROP_LIST will extract a window of the first sidelobe peak from the list.
 %

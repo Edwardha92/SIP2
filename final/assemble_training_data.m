@@ -1,3 +1,4 @@
+% Review: Edward 10.06.2018
 function [no_vec, ap_vec] = assemble_training_data(root_path)
 %ASSEMBLE_TRAINING_DATA This function will return the training vectors for
 %apnoe and no event from all files located at root_path. It iterates over

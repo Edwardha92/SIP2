@@ -1,3 +1,4 @@
+%Review: Edward 10.06.2018
 function akf = calculate_akf(ecg_chunk)
 %CALCULATE_AKF multiplies the time based ecg_chunk and calculates its
 %auto-correlation which is returned.

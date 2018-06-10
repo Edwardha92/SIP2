@@ -1,3 +1,5 @@
+% Review: Edward 10.06.2018
+
 function [no_events_ecg, ap_events_ecg] = get_ecg(root_path)
 % GET_ECG Reads APNOE and NO-APNOE ecg values.
 %      [no_events_ecg, ap_events_ecg] = GET_ECG(root_path)
