@@ -1,6 +1,7 @@
 %
 %
 % Review: Stas 10.06.2018
+% Review: Alexandros 11.06.2018
 
 ecg = ones(512,1)';
 akf_list = ones(1023,121);

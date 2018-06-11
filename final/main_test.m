@@ -1,6 +1,6 @@
 % Review: Edward 10.06.2018
 % Review: Stas 10.06.2018
-
+% Review: Stas 11.06.2018
 sprintf('Start testing...');
 flag = test_ecg();
 flag = flag & test_calculate_akf()
@@ -10,7 +10,7 @@ if flag
    sprintf('All tests completed successfully.') 
 end
 
-
+%Testing der AKF Berechnung  
 function flag = test_calculate_akf()
     input = [1 0 0  1 0 0 1 0 0 1 0 0 1];
     flag = false;
@@ -25,7 +25,7 @@ function flag = test_calculate_akf()
 
 end
 
-
+%Test des Abschneidens
 function flag = test_crop_list()
     flag = true;    
     xDim = 121;
@@ -50,7 +50,7 @@ function flag = test_crop_list()
     end
 end
 
-
+%Test Datenerfassung(Pfad und co)
 function [flag, apnoe, noevent] = test_ecg()
     root_path = 'testData';
     no_path = '\dat\NO_EVENT\';

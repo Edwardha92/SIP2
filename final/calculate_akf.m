@@ -5,6 +5,7 @@ function akf = calculate_akf(ecg_chunk)
 %
 %
 % Review: Stanislav 10.06.2018
+% Review: Alexandros 10.06.2018
 
     ecg = ecg_chunk .* blackman(size(ecg_chunk,2), 'symmetric')';
     akf = xcorr(ecg, ecg);

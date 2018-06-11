@@ -10,6 +10,7 @@ function [input_vector, akf_list] = generate_input_vector(ecg_chunk, akf_list)
 % second maximum of the lower half of the akf_list. 
 %
 % Review: Stanislav 10.06.2018
+% Review: Alexnadros 10.06.2018
 
     list_length = 121;
     ecg_length = 512; 
