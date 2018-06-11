@@ -44,10 +44,7 @@ function [values, indeces] = process_list(akf_list)
     cropped_list = crop_list(akf_list);
     
     [max_val, max_idx] = max(cropped_list);
-    filtered_max_idx = max_idx;
-    filtered_max_val = max_val;
 
-
-    values = downsample(filtered_max_val, downsample_rate);
-    indeces = double(downsample(filtered_max_idx, downsample_rate));
+    values = downsample(max_val, downsample_rate);
+    indeces = double(downsample(max_idx, downsample_rate));
 end
